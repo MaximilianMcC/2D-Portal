@@ -6,7 +6,7 @@ class Map
 {
 	//! Try not to use static stuff in here. If there are multiple maps the whole thing can break I think but idk
 	public static float TileSize { get; private set; }
-	public float Gravity = 9.81f;
+	public static float Gravity = 9.81f;
 	public Tile[] Tiles { get; private set; }
 	private List<TileSettings> tileSettings = new List<TileSettings>();
 
@@ -15,7 +15,7 @@ class Map
 		// Create/add all of the tiles
 		// TODO: Do this in another place
 		TileSettings missing = new TileSettings(' ', false, 0.01f, "missing");
-		tileSettings.Add(new TileSettings('b', false, 0.01f, "black-wall")); // Black wall cubes
+		tileSettings.Add(new TileSettings('b', true, 0.1f, "black-wall")); // Black wall cubes
 		tileSettings.Add(new TileSettings('w', false, 0.01f, "white-wall")); // White wall tiles
 		tileSettings.Add(new TileSettings('t', true, 0.01f, "missing")); // Test
 		

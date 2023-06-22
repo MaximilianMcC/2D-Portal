@@ -27,7 +27,7 @@ class Game
 		Map = new Map("level-0");
 
 		// Create the player
-		Player player = new Player(new Vector2f(400, 400));
+		Player player = new Player(new Vector2f(0, (3 * Map.TileSize)));
 
 	
 		// Run all start methods

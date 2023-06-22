@@ -39,7 +39,7 @@ class Cube : GameObject
 		Vector2f newPosition = Position;
 
 		// Apply gravity
-		float gravityForce = Game.Map.Gravity * mass;
+		float gravityForce = Map.Gravity * mass;
 		yVelocity += gravityForce;
 		newPosition.Y += yVelocity * Game.DeltaTime;
 
