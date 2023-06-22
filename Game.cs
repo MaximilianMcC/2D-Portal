@@ -15,9 +15,23 @@ class Game
 		Window.SetFramerateLimit(60);
 		Window.Closed += (sender, e) => Window.Close();
 
+		// Create a new list to store all of the game objects
+		GameObjects = new List<GameObject>();
+
+
 		// Clocks
 		Clock deltaTimeClock = new Clock();
 
+
+		// Create the player
+		Player player = new Player(new Vector2f(200, 200));
+
+	
+		// Run all start methods
+		for (int i = 0; i < GameObjects.Count; i++)
+		{
+			GameObjects[i].Start();
+		}
 
 
 		while (Window.IsOpen)
@@ -28,17 +42,22 @@ class Game
 			
 
 
-            //TODO: Game logic and whatnot here
-
+			// Update all game objects
+			for (int i = 0; i < GameObjects.Count; i++)
+			{
+				GameObjects[i].Update();
+			}
 
 
 
 			// Clear the window
 			Window.Clear(Color.Black);
 
-
-			// TODO: Render/draw everything here
-
+			// Draw all game objects
+			for (int i = 0; i < GameObjects.Count; i++)
+			{
+				GameObjects[i].Render();
+			}
 
 			// Display the contents of the window
 			Window.Display();
