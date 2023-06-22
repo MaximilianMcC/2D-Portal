@@ -4,17 +4,20 @@ using SFML.Window;
 
 class Map
 {
-	public static float TileSize;
-	private List<Tile> map = new List<Tile>();
-	private List<TileSettings> tiles = new List<TileSettings>();
+	//! Try not to use static stuff in here. If there are multiple maps the whole thing can break I think but idk
+	public static float TileSize { get; private set; }
+	public float Gravity = 9.81f;
+	public Tile[] Tiles { get; private set; }
+	private List<TileSettings> tileSettings = new List<TileSettings>();
 
 	public Map(string mapName)
 	{
 		// Create/add all of the tiles
 		// TODO: Do this in another place
-		TileSettings missing = new TileSettings(' ', false, "missing");
-		tiles.Add(new TileSettings('b', false, "black-wall")); // Black wall cubes
-		tiles.Add(new TileSettings('w', false, "white-wall")); // White wall tiles
+		TileSettings missing = new TileSettings(' ', false, 0.01f, "missing");
+		tileSettings.Add(new TileSettings('b', false, 0.01f, "black-wall")); // Black wall cubes
+		tileSettings.Add(new TileSettings('w', false, 0.01f, "white-wall")); // White wall tiles
+		tileSettings.Add(new TileSettings('t', true, 0.01f, "missing")); // Test
 		
 
 		// Load a new map from a map file
@@ -23,6 +26,7 @@ class Map
 
 
 		// Generate the map
+		List<Tile> map = new List<Tile>();
 		for (int i = 0; i < mapFile.Length; i++)
 		{
 			// For each tile in the map
@@ -30,9 +34,9 @@ class Map
 			{
 				// Create/get the tile settings
 				TileSettings settings = missing;
-				for (int k = 0; k < tiles.Count; k++)
+				for (int k = 0; k < tileSettings.Count; k++)
 				{
-					if (mapFile[i][j] == tiles[k].Character) settings = tiles[k];
+					if (mapFile[i][j] == tileSettings[k].Character) settings = tileSettings[k];
 				}
 
 				// Make the new tile, and add it to the map
@@ -40,14 +44,17 @@ class Map
 				map.Add(tile);
 			}
 		}
+
+		// Convert the map list into a tiles array to make it faster
+		Tiles = map.ToArray();
 	}
 
 	// Draw the map
 	public void DrawMap()
 	{
-		for (int i = 0; i < map.Count; i++)
+		for (int i = 0; i < Tiles.Length; i++)
 		{
-			Game.Window.Draw(map[i].Sprite);
+			Game.Window.Draw(Tiles[i].Sprite);
 		}
 	}
 }
@@ -57,15 +64,22 @@ class Map
 // Tile properties and whatnot
 struct TileSettings
 {
-	public char Character { get; private set; }
+	// Properties
 	public bool Solid { get; private set; }
+	public float Friction { get; private set; }
+
+	// Stuff used for generating the tile
+	// TODO: Find a way to remove these
+	public char Character { get; private set; }
 	public string TextureName { get; private set; }
 
 	// New tile constructor
-	public TileSettings(char mapFileCharacter, bool solid, string textureName)
+	public TileSettings(char mapFileCharacter, bool solid, float friction, string textureName)
 	{
-		this.Character = mapFileCharacter;
 		this.Solid = solid;
+		this.Friction = friction;
+
+		this.Character = mapFileCharacter;
 		this.TextureName = textureName;
 	}
 }

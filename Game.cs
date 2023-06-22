@@ -7,7 +7,7 @@ class Game
 	public static RenderWindow Window { get; private set; }
 	public static float DeltaTime { get; private set; }
 	public static List<GameObject> GameObjects { get; set; }
-	public static readonly float Gravity = 9.81f;
+	public static Map Map { get; private set; }
 
 	public void Run()
 	{
@@ -24,10 +24,10 @@ class Game
 		Clock deltaTimeClock = new Clock();
 
 		// Create the map
-		Map map = new Map("level-0");
+		Map = new Map("level-0");
 
 		// Create the player
-		Player player = new Player(new Vector2f(200, 200));
+		Player player = new Player(new Vector2f(400, 400));
 
 	
 		// Run all start methods
@@ -55,7 +55,7 @@ class Game
 			Window.Clear(Color.Magenta);
 
 			// Draw the map
-			map.DrawMap();
+			Map.DrawMap();
 
 			// Draw all game objects
 			for (int i = 0; i < GameObjects.Count; i++)
