@@ -53,14 +53,7 @@ class Debug
 	// Render all of the debug messages
 	public static void RenderDebugMessages()
 	{
-		float backgroundHeight = 0;
-		for (int i = 0; i < chat.Count; i++)
-		{
-			for (int j = 0; j < chat[i].Length; j++)
-			{
-				backgroundHeight += (chat[i][j].GetGlobalBounds().Height);
-			}
-		}
+		float backgroundHeight = 40 * chat.Count;
 
 		// Draw a background so that the text can be read more easily
 		// TODO: Make the x dynamic

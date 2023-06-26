@@ -4,13 +4,21 @@ using SFML.Window;
 
 class Player : GameObject
 {
+
+	// Visual based values
+	private Sprite sprite;
+
+	// Movement based values
 	private Vector2f position;
 	private Vector2f velocity;
-	private Sprite sprite;
 	private float moveForce = 1500f;
 	private float mass = 25f;
-	private float terminalVelocityX = 500f;
-	private float friction;
+	private float terminalVelocityX = 20f;
+	private float friction = 0.15f;
+
+	// Inventory based values
+	float itemPickUpProximity = 150f;
+
 
 	// New player constructor
 	public Player(Vector2f spawnPoint)
@@ -26,14 +34,17 @@ class Player : GameObject
 		Game.GameObjects.Add(this);
 	}
 
+	// Runs before the update script
 	public void Start()
 	{
 		Console.WriteLine("player");
 	}
 
+	// Add logic every frame
 	public void Update()
 	{
 		Movement();
+		ItemPickUp();
 	}
 
 	// Render the player
@@ -47,7 +58,7 @@ class Player : GameObject
 
 
 
-
+	// Make the player move and interact with the map
 	private void Movement()
 	{
 		// Calculate movement stuff
@@ -68,48 +79,34 @@ class Player : GameObject
 		// Clamp the velocity to stop the player going out of control
 		velocity.X = Math.Clamp(velocity.X, -terminalVelocityX, terminalVelocityX);
 
-
-		// Apply gravity to the player
-		velocity.Y += Map.Gravity * (Game.DeltaTime / mass);
-
-
-		// Loop through all tiles in the current map
-		for (int i = 0; i < Game.Map.Tiles.Length; i++)
-		{
-			// Get the current tile
-			Tile tile = Game.Map.Tiles[i];
-			if (tile.Settings.Solid == false) continue;
-
-			// Check for if the player is on top/standing on the current tile
-			{
-				if (((newPosition.X + Map.TileSize) > tile.Position.X) && (newPosition.X < tile.Position.X))
-				{
-					if (((newPosition.Y + Map.TileSize) > tile.Position.Y) && (position.Y < tile.Position.Y))
-					{
-						// Place the player above the tile
-						newPosition.Y = tile.Position.Y - Map.TileSize;
-
-						// Reset downwards velocity
-						velocity.Y = 0;
-
-						// Set the friction to the current friction
-						friction = tile.Settings.Friction;
-					}
-				}
-
-			}
-
-
-		}
-
 		// Apply friction to slow down the player overtime
 		velocity.X -= velocity.X * friction;
 		if (Math.Abs(velocity.X) < 0.01f) velocity.X = 0f;
 
-		// Console.WriteLine("Friction: " + friction);
-
 		// Update the player position
 		newPosition += velocity;
 		position = newPosition;
+
+
+		Debug.LogValue("X Velocity: ", velocity.X);
+		Debug.LogValue("X Position: ", position.X);
+	}
+
+	// Make the player pickup items that are within a certain proximity
+	private void ItemPickUp()
+	{
+		// Make a circle to act as the pickup area
+		// TODO: If using a circle is bad for performance, do some fancy maths
+		CircleShape circle = new CircleShape(itemPickUpProximity);
+		circle.Origin = new Vector2f(itemPickUpProximity, itemPickUpProximity);
+		circle.Position = new Vector2f(position.X + (Map.TileSize / 2), position.Y + (Map.TileSize / 2));
+
+		// Check for if there is an item inside of the circle
+		for (int i = 0; i < Game.GameObjects.Count; i++)
+		{
+			if (Game.GameObjects[i] == this) continue;
+
+			Console.WriteLine("In vicinity of game object");
+		}
 	}
 }
