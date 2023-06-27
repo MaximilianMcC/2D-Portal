@@ -6,7 +6,7 @@ class Player : GameObject
 {
 
 	// Visual based values
-	private Sprite sprite;
+	public Sprite Sprite { get; set; }
 
 	// Movement based values
 	private Vector2f position;
@@ -17,7 +17,8 @@ class Player : GameObject
 	private float friction = 0.15f;
 
 	// Inventory based values
-	float itemPickUpProximity = 150f;
+	float itemPickUpProximity = 100f;
+	Vector2f heldItemOffset = new Vector2f(65f, -15f);
 
 
 	// New player constructor
@@ -26,9 +27,9 @@ class Player : GameObject
 		this.position = spawnPoint;
 
 		// Create the player sprite
-		this.sprite = new Sprite(new Texture("./assets/sprites/player.png"));
-		this.sprite.Scale = new Vector2f((Map.TileSize / sprite.Texture.Size.X), (Map.TileSize / sprite.Texture.Size.Y));
-		sprite.Position = position;
+		this.Sprite = new Sprite(new Texture("./assets/sprites/player.png"));
+		this.Sprite.Scale = new Vector2f((Map.TileSize / Sprite.Texture.Size.X), (Map.TileSize / Sprite.Texture.Size.Y));
+		Sprite.Position = position;
 
 		// Add the player to the list of game objects
 		Game.GameObjects.Add(this);
@@ -50,8 +51,8 @@ class Player : GameObject
 	// Render the player
 	public void Render()
 	{
-		sprite.Position = position;
-		Game.Window.Draw(sprite);
+		Sprite.Position = position;
+		Game.Window.Draw(Sprite);
 	}
 
 
@@ -105,8 +106,18 @@ class Player : GameObject
 		for (int i = 0; i < Game.GameObjects.Count; i++)
 		{
 			if (Game.GameObjects[i] == this) continue;
+			GameObject gameObject = Game.GameObjects[i];
 
-			Console.WriteLine("In vicinity of game object");
+			if (circle.GetGlobalBounds().Intersects(gameObject.Sprite.GetGlobalBounds()))
+			{
+				// Check for if the game object is a cube
+				if (gameObject is Cube)
+				{
+					// Make the cubes position that of the players
+					// TODO: Do this another way. The actual position isnt being updated
+					gameObject.Sprite.Position = (position + heldItemOffset);
+				}
+			}
 		}
 	}
 }

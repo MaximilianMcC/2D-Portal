@@ -1,6 +1,10 @@
+using SFML.Graphics;
+
 public interface GameObject
 {
-    void Start();
-    void Update();
-    void Render();
+	public Sprite Sprite { get; set; }
+
+	void Start();
+	void Update();
+	void Render();
 }
