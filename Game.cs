@@ -12,7 +12,7 @@ class Game
 	public void Run()
 	{
 		// Create the SFML window
-		Window = new RenderWindow(new VideoMode(800, 800), "2D Portal");
+		Window = new RenderWindow(new VideoMode(1066, 800), "2D Portal");
 		Window.SetFramerateLimit(60);
 		Window.Closed += (sender, e) => Window.Close();
 		Window.SetIcon(32, 32, new Image("./assets/icons/icon-text.png").Pixels);
@@ -29,9 +29,7 @@ class Game
 		Map = new Map("level-0");
 
 		// Create the player and a few cubes
-		Player player = new Player(new Vector2f(0, (11 * Map.TileSize)));
-		WeightedCube weightedCube = new WeightedCube(new Vector2f(500, (11 * Map.TileSize)));
-		CompanionCube companionCube = new CompanionCube(new Vector2f(600, (11 * Map.TileSize)));
+		Player player = new Player(new Vector2f(400, 400));
 	
 		// Run all start methods
 		for (int i = 0; i < GameObjects.Count; i++)
@@ -58,7 +56,7 @@ class Game
 			Window.Clear(Color.Magenta);
 
 			// Draw the map
-			Map.DrawMap();
+			// Map.DrawMap();
 
 			// Draw all game objects
 			for (int i = 0; i < GameObjects.Count; i++)
