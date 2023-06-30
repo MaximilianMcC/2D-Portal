@@ -45,7 +45,6 @@ class Game
 			// Handle events
 			Window.DispatchEvents();
 			DeltaTime = deltaTimeClock.Restart().AsSeconds();
-			Debug.Log("2D-Portal version 1.0a");
 
 			// Update all game objects
 			for (int i = 0; i < GameObjects.Count; i++)

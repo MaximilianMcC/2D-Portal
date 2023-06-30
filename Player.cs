@@ -6,10 +6,9 @@ class Player : GameObject
 {
 
 	// Visual based values
-	public Sprite Sprite { get; set; }
+	private Sprite sprite;
 
 	// Movement based values
-	private Vector2f position;
 	private Vector2f velocity;
 	private float moveForce = 1500f;
 	private float mass = 25f;
@@ -17,45 +16,42 @@ class Player : GameObject
 	private float friction = 0.15f;
 
 	// Inventory based values
-	float itemPickUpProximity = 100f;
-	Vector2f heldItemOffset = new Vector2f(65f, -15f);
-
+	private float itemPickUpProximity = 100f;
+	private Vector2f heldItemOffset = new Vector2f(65f, -15f);
+	private bool pressedAKey;
 
 	// New player constructor
 	public Player(Vector2f spawnPoint)
 	{
-		this.position = spawnPoint;
+		this.Position = spawnPoint;
 
 		// Create the player sprite
-		this.Sprite = new Sprite(new Texture("./assets/sprites/player.png"));
-		this.Sprite.Scale = new Vector2f((Map.TileSize / Sprite.Texture.Size.X), (Map.TileSize / Sprite.Texture.Size.Y));
-		Sprite.Position = position;
+		this.sprite = new Sprite(new Texture("./assets/sprites/player.png"));
+		this.sprite.Scale = new Vector2f((Map.TileSize / sprite.Texture.Size.X), (Map.TileSize / sprite.Texture.Size.Y));
+		sprite.Position = Position;
 
 		// Add the player to the list of game objects
 		Game.GameObjects.Add(this);
 	}
 
 	// Runs before the update script
-	public void Start()
+	public override void Start()
 	{
 		Console.WriteLine("player");
 	}
 
 	// Add logic every frame
-	public void Update()
+	public override void Update()
 	{
 		Movement();
 		ItemPickUp();
 	}
-
-	// Render the player
-	public void Render()
+	
+	// Get the bounds of the player
+	public FloatRect GetBounds()
 	{
-		Sprite.Position = position;
-		Game.Window.Draw(Sprite);
+		return sprite.GetGlobalBounds();
 	}
-
-
 
 
 
@@ -63,7 +59,7 @@ class Player : GameObject
 	private void Movement()
 	{
 		// Calculate movement stuff
-		Vector2f newPosition = position;
+		Vector2f newPosition = Position;
 
 		// Get player movement input
 		if (Keyboard.IsKeyPressed(Keyboard.Key.A) || Keyboard.IsKeyPressed(Keyboard.Key.Left))
@@ -86,11 +82,11 @@ class Player : GameObject
 
 		// Update the player position
 		newPosition += velocity;
-		position = newPosition;
+		Position = newPosition;
 
 
 		Debug.LogValue("X Velocity: ", velocity.X);
-		Debug.LogValue("X Position: ", position.X);
+		Debug.LogValue("X Position: ", Position.X);
 	}
 
 	// Make the player pickup items that are within a certain proximity
@@ -100,23 +96,24 @@ class Player : GameObject
 		// TODO: If using a circle is bad for performance, do some fancy maths
 		CircleShape circle = new CircleShape(itemPickUpProximity);
 		circle.Origin = new Vector2f(itemPickUpProximity, itemPickUpProximity);
-		circle.Position = new Vector2f(position.X + (Map.TileSize / 2), position.Y + (Map.TileSize / 2));
+		circle.Position = new Vector2f(Position.X + (Map.TileSize / 2), Position.Y + (Map.TileSize / 2));
 
 		// Check for if there is an item inside of the circle
 		for (int i = 0; i < Game.GameObjects.Count; i++)
 		{
+			// Get the thing that was in the circle
 			if (Game.GameObjects[i] == this) continue;
 			GameObject gameObject = Game.GameObjects[i];
 
-			if (circle.GetGlobalBounds().Intersects(gameObject.Sprite.GetGlobalBounds()))
+			if (circle.GetGlobalBounds().Intersects(gameObject.GetBounds()))
 			{
-				// Check for if the game object is a cube
-				if (gameObject is Cube)
+				// Check for if the player is pressing the pickup button
+				if (Keyboard.IsKeyPressed(InputManager.InteractKey) && pressedAKey == false)
 				{
-					// Make the cubes position that of the players
-					// TODO: Do this another way. The actual position isnt being updated
-					gameObject.Sprite.Position = (position + heldItemOffset);
+					pressedAKey = true;
 				}
+
+				Debug.LogValue("GameObject collision: ", true);
 			}
 		}
 	}
