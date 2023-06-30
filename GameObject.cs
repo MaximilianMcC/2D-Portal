@@ -1,34 +1,48 @@
-using SFML.System;
 using SFML.Graphics;
+using SFML.System;
+using SFML.Window;
 
-public class GameObject
+class GameObject
 {
-	public Vector2f Position { get; set; }
+	public Vector2f Position;
 	protected Sprite sprite;
 
-	// Runs before the first frame is drawn
-	public virtual void Start()
+
+	/// <summary>
+	/// <param>Create a new game object instance, and add it to the game</param>
+	/// </summary>
+	public GameObject()
 	{
-		this.Position = new Vector2f(0, 0);
-		this.sprite = new Sprite();
+		// Add the current game object to the game
+		Game.GameObjects.Add(this);
 	}
 
-	// Perform logic every frame
-	public virtual void Update()
-	{
 
-	}
 
-	// Draw the game object every frame
+	/// <summary>
+	/// <param>Runs a single time before the Update() method.</param>
+	/// </summary>
+	public virtual void Start() {}
+
+
+
+	/// <summary>
+	/// <param>Update game logic for this game object.</param>
+	/// <param>Runs once every frame.</param>
+	/// </summary>
+	public virtual void Update() {}
+
+
+
+	/// <summary>
+	/// Render the game object.
+	/// Also sets the sprites position to the current position.
+	/// </summary>
 	public virtual void Render()
 	{
+		// Update the sprites position, then draw it
 		sprite.Position = Position;
 		Game.Window.Draw(sprite);
 	}
 
-	// Get the bounds of the sprite
-	public FloatRect GetBounds()
-	{
-		return sprite.GetGlobalBounds();
-	}
 }
