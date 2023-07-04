@@ -14,3 +14,14 @@ bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb
+TILE-INFO
+w
+./assets/sprites/white-wall.png
+true
+true
+0.01
+b
+./assets/sprites/black-wall.png
+false
+true
+0.01

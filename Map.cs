@@ -4,100 +4,124 @@ using SFML.Window;
 
 class Map
 {
-	//! Try not to use static stuff in here. If there are multiple maps the whole thing can break I think but idk
-	public static float TileSize { get; private set; }
-	public static float Gravity = 9.81f;
-	public Tile[] Tiles { get; private set; }
-	private List<TileSettings> tileSettings = new List<TileSettings>();
+	public Tile[] Tiles { get; set; }
+	private float tileSize;
 
-	public Map(string mapName)
+	// New map constructor
+	public Map(float tileSize)
 	{
-		// Create/add all of the tiles
-		// TODO: Do this in another place
-		TileSettings missing = new TileSettings(' ', false, 0.01f, "missing");
-		tileSettings.Add(new TileSettings('b', true, 0.1f, "black-wall")); // Black wall cubes
-		tileSettings.Add(new TileSettings('w', false, 0.01f, "white-wall")); // White wall tiles
-		tileSettings.Add(new TileSettings('t', true, 0.01f, "missing")); // Test
-		
+		this.tileSize = tileSize;
+	}
 
-		// Load a new map from a map file
-		string[] mapFile = File.ReadAllLines($"./assets/maps/{mapName}.map");
-		TileSize = Game.Window.Size.X / mapFile.Length;
+	// Load a map from a file
+	public void LoadMap(string mapPath)
+	{
+		// Open the map file
+		string[] mapFile = File.ReadAllLines(mapPath);
+		List<Tile> mapTiles = new List<Tile>();
+		List<(char, TileProperty, Sprite)> tileTypes = new List<(char, TileProperty, Sprite)>();
 
-
-		// Generate the map
-		List<Tile> map = new List<Tile>();
+		// Get all of the different tiles from the map file
+		bool foundTileInfo = false;
+		int tileIndex = 0;
+		char currentTileCharacter = '\0';
+		Sprite currentTileSprite = new Sprite();
+		TileProperty currentTileProperty = new TileProperty();
+		(char, TileProperty, Sprite) missingTileInfo = ('\0', new TileProperty(), new Sprite());
 		for (int i = 0; i < mapFile.Length; i++)
 		{
-			// For each tile in the map
-			for (int j = 0; j < mapFile[i].Length; j++)
+			// Check for if the current line is the tile info or not
+			if (mapFile[i] == "TILE-INFO")
 			{
-				// Create/get the tile settings
-				TileSettings settings = missing;
-				for (int k = 0; k < tileSettings.Count; k++)
+				foundTileInfo = true;
+				continue;
+			}
+			if (!foundTileInfo) continue;
+			
+			// Check for what the current index is and assign the correct value
+			// TODO: Use switch
+			if (tileIndex == 0) currentTileCharacter = mapFile[i][0];
+			else if (tileIndex == 1) currentTileSprite = new Sprite(new Texture(mapFile[i]));
+			else if (tileIndex == 2) currentTileProperty.Portalable = Boolean.Parse(mapFile[i]);
+			else if (tileIndex == 3) currentTileProperty.Solid = Boolean.Parse(mapFile[i]);
+			else if (tileIndex == 4) currentTileProperty.Friction = float.Parse(mapFile[i]);
+			else
+			{
+				// Create a new tile property, and reset everything
+				tileIndex = 0;
+				tileTypes.Add((currentTileCharacter, currentTileProperty, currentTileSprite));
+				currentTileCharacter = '\0';
+				currentTileSprite = new Sprite();
+				currentTileProperty = new TileProperty();
+			}
+
+			// Increase the current index for the next item
+			tileIndex++;
+		}
+
+		// Loop through all characters in the map file
+		for (int y = 0; y < mapFile.Length; y++)
+		{
+			for (int x = 0; x < mapFile[y].Length; x++)
+			{
+				// Get the tiles position
+				Vector2f position = new Vector2f(x, y) * tileSize;
+
+				// Get the tiles properties and sprite
+				char tileCharacter = mapFile[y][x];
+				(char, TileProperty, Sprite) tileInfo = missingTileInfo;
+				for (int i = 0; i < tileTypes.Count; i++)
 				{
-					if (mapFile[i][j] == tileSettings[k].Character) settings = tileSettings[k];
+					if (tileTypes[i].Item1 == tileCharacter) tileInfo = tileTypes[i];
 				}
 
-				// Make the new tile, and add it to the map
-				Tile tile = new Tile(settings, new Vector2f((j * TileSize), (i * TileSize)));
-				map.Add(tile);
+				// Create and add the tile to the map
+				Tile tile = new Tile(position, tileInfo);
+				mapTiles.Add(tile);
 			}
 		}
 
-		// Convert the map list into a tiles array to make it faster
-		Tiles = map.ToArray();
+		// Convert the map list to an array because its slightly faster
+		Tiles = mapTiles.ToArray();
 	}
 
-	// Draw the map
-	public void DrawMap()
+	// Render the mao
+	public void RenderMap()
 	{
 		for (int i = 0; i < Tiles.Length; i++)
 		{
-			Game.Window.Draw(Tiles[i].Sprite);
+			Tiles[i].Render();
 		}
 	}
 }
 
 
 
-// Tile properties and whatnot
-struct TileSettings
+
+struct TileProperty
 {
-	// Properties
-	public bool Solid { get; private set; }
-	public float Friction { get; private set; }
-
-	// Stuff used for generating the tile
-	// TODO: Find a way to remove these
-	public char Character { get; private set; }
-	public string TextureName { get; private set; }
-
-	// New tile constructor
-	public TileSettings(char mapFileCharacter, bool solid, float friction, string textureName)
-	{
-		this.Solid = solid;
-		this.Friction = friction;
-
-		this.Character = mapFileCharacter;
-		this.TextureName = textureName;
-	}
+	public bool Portalable { get; set; }
+	public bool Solid { get; set; }
+	public float Friction { get; set; }
 }
+
 
 class Tile
 {
 	public Vector2f Position { get; set; }
-	public TileSettings Settings { get; private set; }
-	public Sprite Sprite { get; private set; }
+	public TileProperty Properties { get; set; }
+	Sprite sprite;
 
-	public Tile(TileSettings settings, Vector2f position)
+	public Tile(Vector2f position, (char, TileProperty, Sprite) tileInfo)
 	{
 		this.Position = position;
-		this.Settings = settings;
+		this.Properties = tileInfo.Item2;
+		sprite = new Sprite(tileInfo.Item3);
+	}
 
-		// Create the sprite
-		this.Sprite = new Sprite(new Texture($"./assets/sprites/{settings.TextureName}.png"));
-		Sprite.Scale = new Vector2f((Map.TileSize / Sprite.Texture.Size.X), (Map.TileSize / Sprite.Texture.Size.Y));
-		Sprite.Position = Position;
+	// Draw the tile to the screen
+	public void Render()
+	{
+		Game.Window.Draw(sprite);
 	}
 }

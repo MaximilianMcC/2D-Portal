@@ -26,7 +26,8 @@ class Game
 		Clock deltaTimeClock = new Clock();
 
 		// Create the map
-		Map = new Map("level-0");
+		Map = new Map(Window.Size.Y / 16); // 16y map file
+		Map.LoadMap("./assets/maps/level-0.map");
 
 		// Create the player and a few cubes
 		Player player = new Player(new Vector2f(400, 400));
@@ -56,7 +57,7 @@ class Game
 			Window.Clear(Color.Magenta);
 
 			// Draw the map
-			// Map.DrawMap();
+			Map.RenderMap();
 
 			// Draw all game objects
 			for (int i = 0; i < GameObjects.Count; i++)
