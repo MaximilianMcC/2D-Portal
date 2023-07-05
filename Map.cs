@@ -20,6 +20,7 @@ class Map
 		string[] mapFile = File.ReadAllLines(mapPath);
 		List<Tile> mapTiles = new List<Tile>();
 		List<(char, TileProperty, Sprite)> tileTypes = new List<(char, TileProperty, Sprite)>();
+		int tileInfoBegin = 0;
 
 		// Get all of the different tiles from the map file
 		(char, TileProperty, Sprite) missingTileInfo = ('\0', new TileProperty(), new Sprite());
@@ -35,7 +36,6 @@ class Map
 				{
 					// Check for what the current index is and assign the correct value
 					string data = mapFile[i];
-					Console.WriteLine((i + 1) + "\t" + data);
 					
 					// TODO: Use switch
 					if (tileIndex == 0) currentTileCharacter = data[0];
@@ -64,10 +64,13 @@ class Map
 				if (mapFile[i] == "TILE-INFO")
 				{
 					foundTileInfo = true;
+					tileInfoBegin = i;
 				}
 			}
-			Console.WriteLine(tileTypes.Count);
 		}
+
+		// Remove the tile info from the mapFile array so it just has the map data
+		mapFile = mapFile.Take(tileInfoBegin).ToArray();
 
 		// Loop through all characters in the map file
 		for (int y = 0; y < mapFile.Length; y++)
