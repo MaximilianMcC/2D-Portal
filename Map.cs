@@ -22,41 +22,51 @@ class Map
 		List<(char, TileProperty, Sprite)> tileTypes = new List<(char, TileProperty, Sprite)>();
 
 		// Get all of the different tiles from the map file
-		bool foundTileInfo = false;
-		int tileIndex = 0;
-		char currentTileCharacter = '\0';
-		Sprite currentTileSprite = new Sprite();
-		TileProperty currentTileProperty = new TileProperty();
 		(char, TileProperty, Sprite) missingTileInfo = ('\0', new TileProperty(), new Sprite());
-		for (int i = 0; i < mapFile.Length; i++)
 		{
-			// Check for if the current line is the tile info or not
-			if (mapFile[i] == "TILE-INFO")
+			bool foundTileInfo = false;
+			int tileIndex = 0;
+			char currentTileCharacter = '\0';
+			Sprite currentTileSprite = new Sprite();
+			TileProperty currentTileProperty = new TileProperty();
+			for (int i = 0; i < mapFile.Length; i++)
 			{
-				foundTileInfo = true;
-				continue;
-			}
-			if (!foundTileInfo) continue;
-			
-			// Check for what the current index is and assign the correct value
-			// TODO: Use switch
-			if (tileIndex == 0) currentTileCharacter = mapFile[i][0];
-			else if (tileIndex == 1) currentTileSprite = new Sprite(new Texture(mapFile[i]));
-			else if (tileIndex == 2) currentTileProperty.Portalable = Boolean.Parse(mapFile[i]);
-			else if (tileIndex == 3) currentTileProperty.Solid = Boolean.Parse(mapFile[i]);
-			else if (tileIndex == 4) currentTileProperty.Friction = float.Parse(mapFile[i]);
-			else
-			{
-				// Create a new tile property, and reset everything
-				tileIndex = 0;
-				tileTypes.Add((currentTileCharacter, currentTileProperty, currentTileSprite));
-				currentTileCharacter = '\0';
-				currentTileSprite = new Sprite();
-				currentTileProperty = new TileProperty();
-			}
+				if (foundTileInfo)
+				{
+					// Check for what the current index is and assign the correct value
+					string data = mapFile[i];
+					Console.WriteLine((i + 1) + "\t" + data);
+					
+					// TODO: Use switch
+					if (tileIndex == 0) currentTileCharacter = data[0];
+					else if (tileIndex == 1) currentTileSprite = new Sprite(new Texture(data));
+					else if (tileIndex == 2) currentTileProperty.Portalable = Boolean.Parse(data);
+					else if (tileIndex == 3) currentTileProperty.Solid = Boolean.Parse(data);
+					else if (tileIndex == 4) currentTileProperty.Friction = float.Parse(data);
 
-			// Increase the current index for the next item
-			tileIndex++;
+					// Increase the current index for the next item
+					tileIndex++;
+
+					// Check for if another item needs to be added
+					if (tileIndex >= 5)
+					{
+						// Create a new tile property, and reset everything
+						Console.WriteLine("Resetting tiles");
+						tileIndex = 0;
+						tileTypes.Add((currentTileCharacter, currentTileProperty, currentTileSprite));
+						currentTileCharacter = '\0';
+						currentTileSprite = new Sprite();
+						currentTileProperty = new TileProperty();
+					}
+				}
+				
+				// Check for if the current line is the tile info or not
+				if (mapFile[i] == "TILE-INFO")
+				{
+					foundTileInfo = true;
+				}
+			}
+			Console.WriteLine(tileTypes.Count);
 		}
 
 		// Loop through all characters in the map file
@@ -76,7 +86,7 @@ class Map
 				}
 
 				// Create and add the tile to the map
-				Tile tile = new Tile(position, tileInfo);
+				Tile tile = new Tile(position, tileInfo, tileSize);
 				mapTiles.Add(tile);
 			}
 		}
@@ -112,11 +122,13 @@ class Tile
 	public TileProperty Properties { get; set; }
 	Sprite sprite;
 
-	public Tile(Vector2f position, (char, TileProperty, Sprite) tileInfo)
+	public Tile(Vector2f position, (char, TileProperty, Sprite) tileInfo, float tileSize)
 	{
 		this.Position = position;
 		this.Properties = tileInfo.Item2;
+
 		sprite = new Sprite(tileInfo.Item3);
+		sprite.Position = position;
 	}
 
 	// Draw the tile to the screen
