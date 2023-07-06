@@ -8,6 +8,7 @@ class PortalGun
 	private float coolDownSeconds = 0.3f;
 	private Clock coolDownClock = new Clock();
 	private bool onCoolDown = false;
+	private float angle = 180f; // right (-1, 0)b 
 
 
 	// Shoot a blue portal
@@ -18,6 +19,13 @@ class PortalGun
 		if (onCoolDown == false)
 		{
 			Console.WriteLine("Shooting portal");
+
+			// Check for what block the portal is going to shoot
+			// TODO: Make the angle change based on the players cursor
+			Vector2f direction = new Vector2f(MathF.Cos(angle), MathF.Sin(angle));
+			Tile portalTarget = RayCast.ShootRayCast(Game.Player.Position, direction);
+			portalTarget.ToggleHighlight();
+			Console.WriteLine(portalTarget.Position);
 
 			// Check for what portal they want to shoot
 			if (portalType == PortalType.BLUE) new Sound(new SoundBuffer("./assets/sounds/fire-blue.wav")).Play();

@@ -8,6 +8,7 @@ class Game
 	public static float DeltaTime { get; private set; }
 	public static List<GameObject> GameObjects { get; set; }
 	public static Map Map { get; private set; }
+	public static Player Player { get; private set; }
 
 	public void Run()
 	{
@@ -26,11 +27,11 @@ class Game
 		Clock deltaTimeClock = new Clock();
 
 		// Create the map
-		Map = new Map(Window.Size.Y / 16); // 16y map file
+		Map = new Map(32); // 32px idk
 		Map.LoadMap("./assets/maps/level-0.map");
 
 		// Create the player and a few cubes
-		Player player = new Player(new Vector2f(400, 400));
+		Player = new Player(new Vector2f(400, 400));
 	
 		// Run all start methods
 		for (int i = 0; i < GameObjects.Count; i++)

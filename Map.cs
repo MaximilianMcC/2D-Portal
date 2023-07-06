@@ -123,7 +123,9 @@ class Tile
 {
 	public Vector2f Position { get; set; }
 	public TileProperty Properties { get; set; }
-	Sprite sprite;
+	public FloatRect Bounds { get; private set; }
+	private Sprite sprite;
+	private bool highlighted = false;
 
 	public Tile(Vector2f position, (char, TileProperty, Sprite) tileInfo, float tileSize)
 	{
@@ -132,6 +134,14 @@ class Tile
 
 		sprite = new Sprite(tileInfo.Item3);
 		sprite.Position = position;
+		Bounds = sprite.GetGlobalBounds();
+	}
+
+	// Highlight a tile. Debug only
+	public void ToggleHighlight()
+	{
+		if (highlighted) sprite.Color = Color.Red;
+		else sprite.Color = Color.Transparent;
 	}
 
 	// Draw the tile to the screen

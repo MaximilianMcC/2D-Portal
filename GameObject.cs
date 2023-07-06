@@ -9,7 +9,7 @@ class GameObject
 
 
 	/// <summary>
-	/// <param>Create a new game object instance, and add it to the game</param>
+	/// Create a new game object instance, and add it to the game
 	/// </summary>
 	public GameObject()
 	{
@@ -20,15 +20,15 @@ class GameObject
 
 
 	/// <summary>
-	/// <param>Runs a single time before the Update() method.</param>
+	/// Runs a single time before the Update() method.
 	/// </summary>
 	public virtual void Start() {}
 
 
 
 	/// <summary>
-	/// <param>Update game logic for this game object.</param>
-	/// <param>Runs once every frame.</param>
+	/// Update game logic for this game object.
+	/// Runs once every frame.
 	/// </summary>
 	public virtual void Update() {}
 
