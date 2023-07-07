@@ -5,12 +5,12 @@ using SFML.Window;
 class Map
 {
 	public Tile[] Tiles { get; set; }
-	private float tileSize;
+	public float TileSize { get; set; }
 
 	// New map constructor
 	public Map(float tileSize)
 	{
-		this.tileSize = tileSize;
+		this.TileSize = tileSize;
 	}
 
 	// Load a map from a file
@@ -78,7 +78,7 @@ class Map
 			for (int x = 0; x < mapFile[y].Length; x++)
 			{
 				// Get the tiles position
-				Vector2f position = new Vector2f(x, y) * tileSize;
+				Vector2f position = new Vector2f(x, y) * TileSize;
 
 				// Get the tiles properties and sprite
 				char tileCharacter = mapFile[y][x];
@@ -89,7 +89,7 @@ class Map
 				}
 
 				// Create and add the tile to the map
-				Tile tile = new Tile(position, tileInfo, tileSize);
+				Tile tile = new Tile(position, tileInfo, TileSize);
 				mapTiles.Add(tile);
 			}
 		}

@@ -9,14 +9,13 @@ class Player : GameObject
 	private float moveForce = 1500f;
 	private float mass = 70f; //* 70kg 
 	private float gravity = 9.81f;
-	private FloatRect bounds;
+	private float friction = 0.01f;
 
 	// Create a new player
 	public Player(Vector2f spawnPoint)
 	{
 		// Create the player sprite
 		sprite = new Sprite(new Texture("./assets/sprites/player/player-1.png"));
-		bounds = sprite.GetGlobalBounds();
 
 		// Assign the position from the spawnpoint
 		Position = spawnPoint;
@@ -30,9 +29,6 @@ class Player : GameObject
 	// Update the player
 	public override void Update()
 	{
-		bounds = sprite.GetGlobalBounds();
-		Debug.LogValue("Player bounds: ", bounds);
-
 		Movement();
 		Shoot();
 	}
@@ -51,23 +47,31 @@ class Player : GameObject
 		if (InputManager.KeyHeld(InputManager.Inputs.MoveRight)) velocity.X += moveForce * (Game.DeltaTime / mass);
 		
 		// Apply friction to slow down the player over time
-		ApplyFriction(newPosition);
-
-		// Update the position
-		newPosition += velocity;
-		Position = newPosition;
-	}
-		
-	// Apply friction to slow down the player over time
-	private void ApplyFriction(Vector2f newPosition)
-	{
-		float friction = TileWherePlayerIs(newPosition).Properties.Friction;
 		velocity.X -= velocity.X * friction;
 		if (Math.Abs(velocity.X) < 0.01f) velocity.X = 0f;
 
-		Debug.LogValue("Friction", friction);
-	}
+		// Update the position
+		newPosition += velocity;
 
+		// Check for collision
+		foreach (Tile tile in Game.Map.Tiles)
+		{
+			// Get all solid tiles
+			if (!tile.Properties.Solid) continue;
+
+			if (CollidingWithTile(newPosition, tile))
+			{
+				// Remove all velocity (stop the player)
+				velocity.X = 0f;
+				newPosition.X = Position.X;
+				break;
+			}
+		}
+
+		// Actually move the player
+		Position = newPosition;
+	}
+		
 
 
 	// Check for if the player want to shoot a portal
@@ -86,14 +90,13 @@ class Player : GameObject
 
 
 
-	// Get the tile that the player is currently standing on
-	private Tile TileWherePlayerIs(Vector2f playerPosition)
+	// Check for if the player is colliding with a tile
+	private static bool CollidingWithTile(Vector2f newPosition, Tile tile)
 	{
-		foreach (Tile tile in Game.Map.Tiles)
-		{
-			if (bounds.Intersects(tile.Bounds)) return tile;
-		}
+		// Calculate the player bounds based on the new position
+		FloatRect bounds = new FloatRect(newPosition, new Vector2f(Game.Map.TileSize, Game.Map.TileSize));
 
-		return null;
+		// Check for collision
+		return bounds.Intersects(tile.Bounds);
 	}
 }

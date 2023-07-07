@@ -31,7 +31,7 @@ class Game
 		Map.LoadMap("./assets/maps/level-0.map");
 
 		// Create the player and a few cubes
-		Player = new Player(new Vector2f(400, 400));
+		Player = new Player(new Vector2f(1000, 100));
 	
 		// Run all start methods
 		for (int i = 0; i < GameObjects.Count; i++)
