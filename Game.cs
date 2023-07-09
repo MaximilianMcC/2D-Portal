@@ -13,14 +13,14 @@ class Game
 	public void Run()
 	{
 		// Create the SFML window
-		Window = new RenderWindow(new VideoMode(1066, 800), "2D Portal");
+		Window = new RenderWindow(new VideoMode(1422, 800), "2D Portal");
 		Window.SetFramerateLimit(60);
 		Window.Closed += (sender, e) => Window.Close();
 		Window.SetIcon(32, 32, new Image("./assets/icons/icon-text.png").Pixels);
-		bool debugMode = true;
 
 		// Create a new list to store all of the game objects
 		GameObjects = new List<GameObject>();
+		bool debugMode = true;
 
 
 		// Clocks
@@ -46,31 +46,39 @@ class Game
 			Window.DispatchEvents();
 			DeltaTime = deltaTimeClock.Restart().AsSeconds();
 
-			// Update all game objects
-			for (int i = 0; i < GameObjects.Count; i++)
-			{
-				GameObjects[i].Update();
-			}
+
+			// Update everything
+			Update();
 
 
-
-			// Clear the window
+			// Clear the screen, then render everything
 			Window.Clear(Color.Magenta);
-
-			// Draw the map
-			Map.RenderMap();
-
-			// Draw all game objects
-			for (int i = 0; i < GameObjects.Count; i++)
-			{
-				GameObjects[i].Render();
-			}
-
-			// Display the debug info
+			Render();
 			if (debugMode) Debug.RenderDebugMessages();
-
-			// Display the contents of the window
 			Window.Display();
+		}
+	}
+
+
+
+	private void Update()
+	{
+		// Update all game objects
+		for (int i = 0; i < GameObjects.Count; i++)
+		{
+			GameObjects[i].Update();
+		}
+	}
+
+	private void Render()
+	{
+		// Draw the map
+		Map.RenderMap();
+
+		// Draw all game objects
+		for (int i = 0; i < GameObjects.Count; i++)
+		{
+			GameObjects[i].Render();
 		}
 	}
 }
