@@ -10,12 +10,17 @@ class Player : GameObject
 	private float mass = 70f; //* 70kg 
 	private float gravity = 9.81f;
 	private float friction = 0.01f;
+	private Direction direction;
 
 	// Create a new player
 	public Player(Vector2f spawnPoint)
 	{
 		// Create the player sprite
 		sprite = new Sprite(new Texture("./assets/sprites/player/player-1.png"));
+		direction = Direction.RIGHT;
+		// TODO: Don't change the origin
+		sprite.Origin = new Vector2f((sprite.Texture.Size.X / 2), (sprite.Texture.Size.X / 2));
+
 
 		// Assign the position from the spawnpoint
 		Position = spawnPoint;
@@ -31,6 +36,7 @@ class Player : GameObject
 	{
 		Movement();
 		Shoot();
+		Animate();
 	}
 
 
@@ -43,12 +49,23 @@ class Player : GameObject
 		Vector2f newPosition = Position;
 
 		// Get player movement input
-		if (InputManager.KeyHeld(InputManager.Inputs.MoveLeft)) velocity.X -= moveForce * (Game.DeltaTime / mass);
-		if (InputManager.KeyHeld(InputManager.Inputs.MoveRight)) velocity.X += moveForce * (Game.DeltaTime / mass);
+		if (InputManager.KeyHeld(InputManager.Inputs.MoveLeft))
+		{
+			velocity.X -= moveForce * (Game.DeltaTime / mass);
+			direction = Direction.LEFT;
+		}
+		if (InputManager.KeyHeld(InputManager.Inputs.MoveRight))
+		{
+			velocity.X += moveForce * (Game.DeltaTime / mass);
+			direction = Direction.RIGHT;
+		}
 		
 		// Apply friction to slow down the player over time
 		velocity.X -= velocity.X * friction;
 		if (Math.Abs(velocity.X) < 0.01f) velocity.X = 0f;
+
+		// Apply gravity to move the player downwards
+		// velocity.Y += gravity;
 
 		// Update the position
 		newPosition += velocity;
@@ -61,9 +78,10 @@ class Player : GameObject
 
 			if (CollidingWithTile(newPosition, tile))
 			{
-				// Remove all velocity (stop the player)
+				// Stop the player and disregard the new movement
 				velocity.X = 0f;
-				newPosition.X = Position.X;
+				velocity.Y = 0f;
+				newPosition = Position;
 				break;
 			}
 		}
@@ -91,7 +109,7 @@ class Player : GameObject
 
 
 	// Check for if the player is colliding with a tile
-	private static bool CollidingWithTile(Vector2f newPosition, Tile tile)
+	private bool CollidingWithTile(Vector2f newPosition, Tile tile)
 	{
 		// Calculate the player bounds based on the new position
 		FloatRect bounds = new FloatRect(newPosition, new Vector2f(Game.Map.TileSize, Game.Map.TileSize));
@@ -99,4 +117,30 @@ class Player : GameObject
 		// Check for collision
 		return bounds.Intersects(tile.Bounds);
 	}
+
+
+
+
+
+
+
+
+	// Animate the player
+	private void Animate()
+	{
+		// Check for what direction the player is, then flip them
+		sprite.Scale = new Vector2f((int)direction, sprite.Scale.Y);
+
+		// TODO: Animate the player
+	}
+}
+
+
+
+
+
+enum Direction
+{
+	LEFT = -1,
+	RIGHT = 1
 }
