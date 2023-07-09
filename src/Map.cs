@@ -36,6 +36,9 @@ class Map
 				{
 					// Check for what the current index is and assign the correct value
 					string data = mapFile[i];
+
+					// Check for if the current line is a comment (starts with a #)
+					if (data.StartsWith('#')) continue;
 					
 					// TODO: Use switch
 					if (tileIndex == 0) currentTileCharacter = data[0];

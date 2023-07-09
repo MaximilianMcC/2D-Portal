@@ -1,24 +1,29 @@
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwww
 bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb
 TILE-INFO
+# Character
+# Sprite path
+# Portable
+# Solid
+# Friction
 w
 ./assets/sprites/white-wall.png
 true
-true
+false
 0.01
 b
 ./assets/sprites/black-wall.png
