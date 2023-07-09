@@ -1,9 +1,11 @@
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
 class Game
 {
+	public const float Gravity = 9.81f;
 	public static RenderWindow Window { get; private set; }
 	public static float DeltaTime { get; private set; }
 	public static List<GameObject> GameObjects { get; set; }
@@ -17,6 +19,7 @@ class Game
 		Window.SetFramerateLimit(60);
 		Window.Closed += (sender, e) => Window.Close();
 		Window.SetIcon(32, 32, new Image("./assets/icons/icon-text.png").Pixels);
+		Listener.GlobalVolume = 1;
 
 		// Create a new list to store all of the game objects
 		GameObjects = new List<GameObject>();

@@ -8,7 +8,6 @@ class Player : GameObject
 	private Vector2f velocity;
 	private float moveForce = 1500f;
 	private float mass = 70f; //* 70kg 
-	private float gravity = 9.81f;
 	private float friction = 0.01f;
 	private Direction direction;
 
@@ -19,7 +18,7 @@ class Player : GameObject
 		sprite = new Sprite(new Texture("./assets/sprites/player/player-1.png"));
 		direction = Direction.RIGHT;
 		// TODO: Don't change the origin
-		sprite.Origin = new Vector2f((sprite.Texture.Size.X / 2), (sprite.Texture.Size.X / 2));
+		sprite.Origin = new Vector2f((sprite.Texture.Size.X / 2), 0);
 
 
 		// Assign the position from the spawnpoint
@@ -65,7 +64,7 @@ class Player : GameObject
 		if (Math.Abs(velocity.X) < 0.01f) velocity.X = 0f;
 
 		// Apply gravity to move the player downwards
-		// velocity.Y += gravity;
+		velocity.Y += Game.Gravity;
 
 		// Update the position
 		newPosition += velocity;
@@ -73,21 +72,26 @@ class Player : GameObject
 		// Check for collision
 		foreach (Tile tile in Game.Map.Tiles)
 		{
-			// Get all solid tiles
-			if (!tile.Properties.Solid) continue;
-
-			if (CollidingWithTile(newPosition, tile))
+			// Get all solid tiles that the player is colliding with
+			if (tile.Properties.Solid == true && CollidingWithTile(newPosition, tile))
 			{
 				// Stop the player and disregard the new movement
 				velocity.X = 0f;
 				velocity.Y = 0f;
-				newPosition = Position;
+
+				// Adjust the position of the player to allow them to move
+				newPosition.Y = tile.Position.Y - Game.Map.TileSize;
 				break;
 			}
 		}
 
 		// Actually move the player
 		Position = newPosition;
+
+
+		//! debug
+		Debug.LogValue("Player position: ", Position);
+		Debug.LogValue("Player velocity: ", velocity);
 	}
 		
 
@@ -95,8 +99,8 @@ class Player : GameObject
 	// Check for if the player want to shoot a portal
 	private void Shoot()
 	{
-		if (InputManager.MouseClicked(InputManager.Inputs.FireBlue)) portalGun.ShootPortal(PortalType.BLUE);
-		if (InputManager.MouseClicked(InputManager.Inputs.FireOrange)) portalGun.ShootPortal(PortalType.ORANGE);
+		// if (InputManager.MouseClicked(InputManager.Inputs.FireBlue)) portalGun.ShootPortal(PortalType.BLUE);
+		// if (InputManager.MouseClicked(InputManager.Inputs.FireOrange)) portalGun.ShootPortal(PortalType.ORANGE);
 	}
 
 
