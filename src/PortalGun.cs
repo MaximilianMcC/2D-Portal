@@ -5,10 +5,10 @@ using SFML.Audio;
 
 class PortalGun
 {
-	private float coolDownSeconds = 0.3f;
-	private Clock coolDownClock = new Clock();
+	private readonly float coolDownSeconds = 0.3f;
+	private readonly Clock coolDownClock = new Clock();
 	private bool onCoolDown = false;
-	private float angle = 180f; // right (-1, 0)b 
+	private float angle = 180f; // right (-1, 0)
 
 
 	// Shoot a blue portal

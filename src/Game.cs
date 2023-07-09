@@ -31,7 +31,7 @@ class Game
 		Map.LoadMap("./assets/maps/level-0.map");
 
 		// Create the player and a few cubes
-		Player = new Player(new Vector2f(1000, 100));
+		Player = new Player(new Vector2f(50, 100));
 	
 		// Run all start methods
 		for (int i = 0; i < GameObjects.Count; i++)
@@ -60,7 +60,7 @@ class Game
 	}
 
 
-
+	// Do all the game logic and whatnot
 	private void Update()
 	{
 		// Update all game objects
@@ -70,6 +70,7 @@ class Game
 		}
 	}
 
+	// Draw everything to the screen
 	private void Render()
 	{
 		// Draw the map
@@ -80,5 +81,23 @@ class Game
 		{
 			GameObjects[i].Render();
 		}
+
+
+
+		//! DEBUG
+		/*
+		foreach (Tile tile in Game.Map.Tiles)
+		{
+			if (tile.Bounds.Contains((float)Mouse.GetPosition().X, (float)Mouse.GetPosition().Y))
+			{
+				Debug.LogValue("Solid:    ", tile.Properties.Solid);
+				Debug.LogValue("Portable: ", tile.Properties.Portalable);
+				Debug.LogValue("Friction: ", tile.Properties.Friction);
+			}
+		}
+		*/
+
+
+
 	}
 }
