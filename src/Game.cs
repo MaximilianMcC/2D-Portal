@@ -32,6 +32,9 @@ class Game
 
 		// Create the player and a few cubes
 		Player = new Player(new Vector2f(50, 100));
+
+		// Radio
+		Radio radio = new Radio(new Vector2f(100, 100));
 	
 		// Run all start methods
 		for (int i = 0; i < GameObjects.Count; i++)
