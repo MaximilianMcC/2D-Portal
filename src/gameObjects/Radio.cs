@@ -7,7 +7,8 @@ class Radio : GameObject
 	Sound radio;
 	float minDistance = 300f; // The distance where the radio sound is at 100% volume
 	float maxDistance = 1000f; // The distance where the radio sound fades out to 0% volume
-	
+	private Vector2f velocity;
+
 	// Create a new radio
 	public Radio(Vector2f spawnPoint)
 	{
@@ -32,6 +33,47 @@ class Radio : GameObject
 	// Update
 	public override void Update()
 	{
+		ChangeVolume();
+		ApplyGravity();
+	}
+
+	// Add gravity to the radio
+	public void ApplyGravity()
+	{
+		Vector2f newPosition = Position;
+
+		// Apply gravity to move the radio downwards
+		velocity.Y += Game.Gravity;
+
+		// Update the position
+		newPosition += velocity;
+
+		// Check for collision
+		foreach (Tile tile in Game.Map.Tiles)
+		{
+			// Get all solid tiles that the player is colliding with
+			if (tile.Properties.Solid == true && CollidingWithTile(newPosition, tile))
+			{
+				// Stop the player from moving downwards
+				velocity.Y = 0f;
+
+				// Adjust the position of the player to allow them to move
+				newPosition.Y = tile.Position.Y - Game.Map.TileSize;
+				break;
+			}
+		}
+
+		// Update the position
+		Position = newPosition;
+
+		Debug.LogValue("Radio y: ", velocity.Y);
+		Debug.LogValue("radio new position ", newPosition);
+		Debug.LogValue("radio position ", Position);
+	}
+
+	// Play the radio
+	public void ChangeVolume()
+	{
 		// Get the distance from the player to the radio
 		Vector2f playerPosition = Game.Player.Position;
 		float distance = MathF.Sqrt(MathF.Pow((playerPosition.X - Position.X), 2) + MathF.Pow((playerPosition.Y - Position.Y), 2));
@@ -48,9 +90,18 @@ class Radio : GameObject
 
 		// Set the radios volume
 		radio.Volume = volume;
+	}
 
-		//! debug
-		Debug.LogValue("Distance to radio: ", distance);
-		Debug.LogValue("Radio volume rn:   ", radio.Volume);
+
+
+	// Check for if the radio is colliding with a tile
+	// TODO: Put this in the GameObject class
+	private bool CollidingWithTile(Vector2f newPosition, Tile tile)
+	{
+		// Calculate the player bounds based on the new position
+		FloatRect bounds = new FloatRect(newPosition, new Vector2f(Game.Map.TileSize, Game.Map.TileSize));
+
+		// Check for collision
+		return bounds.Intersects(tile.Bounds);
 	}
 }
