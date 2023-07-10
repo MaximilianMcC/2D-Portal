@@ -11,6 +11,7 @@ class Game
 	public static List<GameObject> GameObjects { get; set; }
 	public static Map Map { get; private set; }
 	public static Player Player { get; private set; }
+	private bool debugMode = false;
 
 	public void Run()
 	{
@@ -19,11 +20,10 @@ class Game
 		Window.SetFramerateLimit(60);
 		Window.Closed += (sender, e) => Window.Close();
 		Window.SetIcon(32, 32, new Image("./assets/icons/icon-text.png").Pixels);
-		Listener.GlobalVolume = 1;
+		Listener.GlobalVolume = 15;
 
 		// Create a new list to store all of the game objects
 		GameObjects = new List<GameObject>();
-		bool debugMode = true;
 
 
 		// Clocks
@@ -74,6 +74,9 @@ class Game
 		{
 			GameObjects[i].Update();
 		}
+
+		// Check for if they want to enable/disable debug console
+		if (InputManager.KeyPressed(InputManager.Inputs.ToggleDebugMode)) debugMode = !debugMode;
 	}
 
 	// Draw everything to the screen

@@ -62,6 +62,9 @@ struct Input
 	public Keyboard.Key Interact;
 	public Mouse.Button FireBlue;
 	public Mouse.Button FireOrange;
+
+	// Other inputs
+	public Keyboard.Key ToggleDebugMode;
 	
 
 
@@ -78,5 +81,8 @@ struct Input
 		this.Interact = Keyboard.Key.E;
 		this.FireBlue = Mouse.Button.Left;
 		this.FireOrange = Mouse.Button.Right;
+
+		// Other inputs
+		this.ToggleDebugMode = Keyboard.Key.F3;
 	}
 }
