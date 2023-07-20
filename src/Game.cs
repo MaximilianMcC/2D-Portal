@@ -8,6 +8,7 @@ class Game
 	public const float Gravity = 9.81f;
 	public static RenderWindow Window { get; private set; }
 	public static float DeltaTime { get; private set; }
+	public static List<GameObject> GameObjects;
 	private bool debugMode = false;
 
 	public void Run()
@@ -22,6 +23,15 @@ class Game
 		// Clocks
 		Clock deltaTimeClock = new Clock();
 
+
+		// Store all game objects
+		// TODO: Instantiate game objects in another class or something to keep clean
+		GameObjects = new List<GameObject>();
+		Player player = new Player();
+
+
+		// Run all of the game objects start methods
+		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Start();
 
 
 		while (Window.IsOpen)
@@ -45,6 +55,9 @@ class Game
 	// Do all the game logic and whatnot
 	private void Update()
 	{;
+		// Update all of the game objects
+		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Update();
+
 		// Check for if they want to enable/disable debug console
 		if (InputManager.KeyPressed(InputManager.Inputs.ToggleDebugMode)) debugMode = !debugMode;
 	}
@@ -52,6 +65,10 @@ class Game
 	// Draw everything to the screen
 	private void Render()
 	{
+		// Render all of the game objects
+		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Render();
+
+		// Show the debug console if debug mode is enabled
 		if (debugMode) Debug.RenderDebugMessages();
 	}
 }

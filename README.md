@@ -5,7 +5,7 @@ A simple version of the game Portal, remade in 2D using SFML
 # TODO:
 Todo list of features that I might add.
 - [x] Basic SFML setup
-- [ ] Velocity/Physics based player movement
+- [x] Velocity/Physics based player movement
 - [ ] Player gravity
 - [ ] Player animation
 - [ ] Somewhat tile based map
@@ -31,3 +31,16 @@ Todo list of features that I might add.
 - [ ] Save and load game
 - [ ] Achievements
 - [ ] Particles/screen shake
+- [ ] Players friction is different depending on material
+
+# How it all works
+Mostly notes and stuff so I don't forget what I'm doing
+## Measurements
+All measurements are in the table.
+| **Measurement** | **Unit**  |
+|-----------------|-----------|
+| Time            | Seconds   |
+| Weight/mass     | Kilograms |
+
+## `GameObject` class
+`GameObject` is a class that is supposed to be extended. All game objects are updated and rendered once every frame. They also have a start method that is called a single time when the game starts.
