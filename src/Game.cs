@@ -8,9 +8,6 @@ class Game
 	public const float Gravity = 9.81f;
 	public static RenderWindow Window { get; private set; }
 	public static float DeltaTime { get; private set; }
-	public static List<GameObject> GameObjects { get; set; }
-	public static Map Map { get; private set; }
-	public static Player Player { get; private set; }
 	private bool debugMode = false;
 
 	public void Run()
@@ -20,30 +17,11 @@ class Game
 		Window.SetFramerateLimit(60);
 		Window.Closed += (sender, e) => Window.Close();
 		Window.SetIcon(32, 32, new Image("./assets/icons/icon-text.png").Pixels);
-		Listener.GlobalVolume = 15;
-
-		// Create a new list to store all of the game objects
-		GameObjects = new List<GameObject>();
-
+		Listener.GlobalVolume = 5;
 
 		// Clocks
 		Clock deltaTimeClock = new Clock();
 
-		// Create the map
-		Map = new Map(32); // 32px idk
-		Map.LoadMap("./assets/maps/level-0.map");
-
-		// Create the player and a few cubes
-		Player = new Player(new Vector2f(50, 100));
-
-		// Radio
-		Radio radio = new Radio(new Vector2f(100, 100));
-	
-		// Run all start methods
-		for (int i = 0; i < GameObjects.Count; i++)
-		{
-			GameObjects[i].Start();
-		}
 
 
 		while (Window.IsOpen)
@@ -52,7 +30,6 @@ class Game
 			Window.DispatchEvents();
 			DeltaTime = deltaTimeClock.Restart().AsSeconds();
 
-
 			// Update everything
 			Update();
 
@@ -60,7 +37,6 @@ class Game
 			// Clear the screen, then render everything
 			Window.Clear(Color.Magenta);
 			Render();
-			if (debugMode) Debug.RenderDebugMessages();
 			Window.Display();
 		}
 	}
@@ -68,13 +44,7 @@ class Game
 
 	// Do all the game logic and whatnot
 	private void Update()
-	{
-		// Update all game objects
-		for (int i = 0; i < GameObjects.Count; i++)
-		{
-			GameObjects[i].Update();
-		}
-
+	{;
 		// Check for if they want to enable/disable debug console
 		if (InputManager.KeyPressed(InputManager.Inputs.ToggleDebugMode)) debugMode = !debugMode;
 	}
@@ -82,31 +52,6 @@ class Game
 	// Draw everything to the screen
 	private void Render()
 	{
-		// Draw the map
-		Map.RenderMap();
-
-		// Draw all game objects
-		for (int i = 0; i < GameObjects.Count; i++)
-		{
-			GameObjects[i].Render();
-		}
-
-
-
-		//! DEBUG
-		/*
-		foreach (Tile tile in Game.Map.Tiles)
-		{
-			if (tile.Bounds.Contains((float)Mouse.GetPosition().X, (float)Mouse.GetPosition().Y))
-			{
-				Debug.LogValue("Solid:    ", tile.Properties.Solid);
-				Debug.LogValue("Portable: ", tile.Properties.Portalable);
-				Debug.LogValue("Friction: ", tile.Properties.Friction);
-			}
-		}
-		*/
-
-
-
+		if (debugMode) Debug.RenderDebugMessages();
 	}
 }
