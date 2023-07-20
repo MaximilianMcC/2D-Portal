@@ -11,7 +11,7 @@ Todo list of features that I might add.
 - [ ] Somewhat tile based map
 - [ ] Player collisions with map
 - [ ] Fancy lighting
-- [ ] Portals that work on X
+- [x] Portals that work on X
 - [ ] Portals that work on Y
 - [ ] Portal gun to create portals
 - [ ] Button/Pressure plate
@@ -32,9 +32,11 @@ Todo list of features that I might add.
 - [ ] Achievements
 - [ ] Particles/screen shake
 - [ ] Players friction is different depending on material
+- [ ] Setting to change max fps or enable vsync
 
 # How it all works
 Mostly notes and stuff so I don't forget what I'm doing
+
 ## Measurements
 All measurements are in the table.
 | **Measurement** | **Unit**  |

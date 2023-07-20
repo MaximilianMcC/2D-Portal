@@ -27,7 +27,13 @@ class Game
 		// Store all game objects
 		// TODO: Instantiate game objects in another class or something to keep clean
 		GameObjects = new List<GameObject>();
-		Player player = new Player();
+		Player player = new Player(new Vector2f(100, 200));
+
+		// Create test portals
+		BluePortal bluePortal = new BluePortal(new Vector2f(0, 200));
+		OrangePortal orangePortal = new OrangePortal(new Vector2f(300, 200));
+		bluePortal.OrangePortal = orangePortal;
+		orangePortal.BluePortal = bluePortal;
 
 
 		// Run all of the game objects start methods
@@ -40,12 +46,13 @@ class Game
 			Window.DispatchEvents();
 			DeltaTime = deltaTimeClock.Restart().AsSeconds();
 
+
 			// Update everything
 			Update();
 
 
 			// Clear the screen, then render everything
-			Window.Clear(Color.Magenta);
+			Window.Clear(Color.Blue);
 			Render();
 			Window.Display();
 		}
@@ -54,7 +61,7 @@ class Game
 
 	// Do all the game logic and whatnot
 	private void Update()
-	{;
+	{
 		// Update all of the game objects
 		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Update();
 

@@ -1,17 +1,19 @@
 using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
 
 class Player : GameObject
 {
-	public float moveForce { get; set; } = 2000f;
+	private float moveForce = 2500f;
 	private float mass = 60f;
-	private float frictionCoefficient = 0.1f;
+	private float frictionCoefficient = 0.2f;
 	private Vector2f velocity;
 
 
-	public Player()
+	public Player(Vector2f spawnPoint)
 	{
+		// Set the players spawn point
+		Position = spawnPoint;
+
 		// Create the sprite
 		Sprite = new Sprite(new Texture("./assets/sprites/player/player-5.png"));
 	}
@@ -21,6 +23,10 @@ class Player : GameObject
 	{
 		// TODO: Split up player movement into another class
 		Move();
+
+		base.Update();
+		Debug.LogValue("Player Position", Position);
+		Debug.LogValue("Player Velocity", velocity);
 	}
 
 	// Move the player
@@ -37,8 +43,8 @@ class Player : GameObject
 
 		// Apply friction on the X to slow down the player overtime
 		velocity.X -= (frictionCoefficient * velocity.X);
-		if (Math.Abs(velocity.X) < 0.01f) velocity.X = 0f;
-
+		if (Math.Abs(velocity.X) < 0.1f) velocity.X = 0f;
+		
 		// Update the players position
 		newPosition += velocity;
 		Position = newPosition;
