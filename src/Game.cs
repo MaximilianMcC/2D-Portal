@@ -30,8 +30,8 @@ class Game
 		Player player = new Player(new Vector2f(100, 200));
 
 		// Create test portals
-		BluePortal bluePortal = new BluePortal(new Vector2f(0, 200));
-		OrangePortal orangePortal = new OrangePortal(new Vector2f(300, 200));
+		BluePortal bluePortal = new BluePortal(new Vector2f(10, 200), Direction.LEFT);
+		OrangePortal orangePortal = new OrangePortal(new Vector2f(300, 200), Direction.RIGHT);
 		bluePortal.OrangePortal = orangePortal;
 		orangePortal.BluePortal = bluePortal;
 

@@ -5,7 +5,7 @@ class GameObject
 {
 	public Vector2f Position { get; set; }
 	public Sprite Sprite { get; set; }
-	public FloatRect Bounds { get; private set; }
+	public FloatRect Bounds { get; protected set; }
 
 
 
