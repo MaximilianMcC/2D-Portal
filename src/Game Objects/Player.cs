@@ -3,7 +3,8 @@ using SFML.System;
 
 class Player : GameObject
 {
-	private float moveForce = 2500f;
+	public Direction direction;
+	private float moveForce = 2700f;
 	private float mass = 60f;
 	private float frictionCoefficient = 0.2f;
 	private Vector2f velocity;
@@ -48,5 +49,8 @@ class Player : GameObject
 		// Update the players position
 		newPosition += velocity;
 		Position = newPosition;
+
+		// Update the players movement direction
+		direction = velocity.X >= 0 ? Direction.RIGHT : Direction.LEFT;
 	}
 }
