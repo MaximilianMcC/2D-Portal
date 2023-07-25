@@ -31,7 +31,7 @@ class Game
 
 		// Create test portals
 		BluePortal bluePortal = new BluePortal(new Vector2f(10, 200), Direction.LEFT);
-		OrangePortal orangePortal = new OrangePortal(new Vector2f(300, 200), Direction.RIGHT);
+		OrangePortal orangePortal = new OrangePortal(new Vector2f(300, 400), Direction.DOWN);
 		bluePortal.OrangePortal = orangePortal;
 		orangePortal.BluePortal = bluePortal;
 

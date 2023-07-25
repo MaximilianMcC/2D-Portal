@@ -4,36 +4,38 @@ using SFML.Graphics;
 class Portal : GameObject
 {
 	protected Player player;
-	// TODO: Don't put these in manually
 	protected int width = 1;
 	protected int height = 32;
 	protected Direction direction;
 
 	public override void Start()
 	{
+		// Get the player
 		player = Game.GameObjects.OfType<Player>().First();
 	}
 
 	// Set the portals sprite
-	protected Sprite SetSprite(Sprite sprite)
+	protected void SetSprite(Sprite sprite)
 	{
 		// Make the sprite have the correct rotation, and direction
 		if (direction == Direction.LEFT || direction == Direction.RIGHT) sprite.Scale = new Vector2f((int)direction, 1);
 		else sprite.Rotation = (float)direction;
 
-		return sprite;
+		// Assign the sprite
+		Sprite = sprite;
 	}
 
 	// Set the portal collision bounds
-	protected FloatRect SetBounds()
+	protected void SetBounds()
 	{
 		Vector2f boundsPosition = Position;
 
-		// Adjust the position
+		// Adjust the positions depending on the direction
 		if (direction == Direction.LEFT) boundsPosition.X -= width;
-		// else if (direction == Direction.RIGHT) boundsPosition.X += width;
+		else if (direction == Direction.UP) boundsPosition.Y += height;
+		else if (direction == Direction.DOWN) boundsPosition.Y -= height;
 
-		return new FloatRect(boundsPosition, new Vector2f(width, height));
+		Bounds = new FloatRect(boundsPosition, new Vector2f(width, height));
 	}
 
 	// Check for portal collision, then teleport the player
@@ -46,8 +48,15 @@ class Portal : GameObject
 		float exitPositionX = otherPortal.Position.X;
 		float exitPositionY = otherPortal.Position.Y;
 
-		// Adjust for the direction
+		// Adjust for the direction on the X
 		if (otherPortal.direction == Direction.RIGHT) exitPositionX -= player.Bounds.Width;
+
+		// Adjust for the direction on the Y
+		if (otherPortal.direction == Direction.UP)
+		{
+			exitPositionY -= player.Bounds.Height;
+			exitPositionX -= player.Bounds.Width;
+		}
 
 		// Move the player to the exit position, making them go to the other portal
 		player.Position = new Vector2f(exitPositionX, exitPositionY);
@@ -75,15 +84,14 @@ class BluePortal : Portal
 		this.direction = direction;
 
 		// Make the sprite and set the bounds
-		Sprite = SetSprite(new Sprite(new Texture("./assets/sprites/portal-blue.png")));
-		Bounds = SetBounds();
+		SetSprite(new Sprite(new Texture("./assets/sprites/portal-blue.png")));
+		SetBounds();
 	}
 
 	public override void Update()
 	{
 		// Check for portal collision, then teleport the player
 		PortalCollision(OrangePortal);
-		Debug.LogValue("blue bounds:", Bounds);
 	}
 }
 
@@ -100,14 +108,13 @@ class OrangePortal : Portal
 		this.direction = direction;
 
 		// Make the sprite and set the bounds
-		Sprite = SetSprite(new Sprite(new Texture("./assets/sprites/portal-orange.png")));
-		Bounds = SetBounds();
+		SetSprite(new Sprite(new Texture("./assets/sprites/portal-orange.png")));
+		SetBounds();
 	}
 
 	public override void Update()
 	{
 		// Check for portal collision, then teleport the player
 		PortalCollision(BluePortal);
-		Debug.LogValue("orange bounds:", Bounds);
 	}
 }
