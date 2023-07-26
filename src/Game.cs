@@ -10,6 +10,7 @@ class Game
 	public static float DeltaTime { get; private set; }
 	public static List<GameObject> GameObjects;
 	private bool debugMode = false;
+	private Discord discord;
 
 	public void Run()
 	{
@@ -22,7 +23,6 @@ class Game
 
 		// Clocks
 		Clock deltaTimeClock = new Clock();
-
 
 		// Store all game objects
 		// TODO: Instantiate game objects in another class or something to keep clean
@@ -38,6 +38,12 @@ class Game
 
 		// Run all of the game objects start methods
 		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Start();
+
+		// Start Discord rich presence
+		// TODO: Don't make private to game class
+		discord = new Discord();
+		discord.Start();
+		discord.UpdateState(State.PLAYING);
 
 
 		while (Window.IsOpen)
@@ -66,7 +72,13 @@ class Game
 		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Update();
 
 		// Check for if they want to enable/disable debug console
-		if (InputManager.KeyPressed(InputManager.Inputs.ToggleDebugMode)) debugMode = !debugMode;
+		// if (InputManager.KeyPressed(InputManager.Inputs.ToggleDebugMode)) debugMode = !debugMode;
+		if (InputManager.KeyPressed(InputManager.Inputs.ToggleDebugMode))
+		{
+			debugMode = !debugMode;
+			if (debugMode) discord.UpdateState(State.DEBUGGING);
+			else discord.UpdateState(State.PLAYING);
+		}
 	}
 
 	// Draw everything to the screen
