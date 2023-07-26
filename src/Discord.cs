@@ -22,22 +22,10 @@ class Discord
 		client.SetPresence(presence);
 	}
 
-	// Set the new presence	
-	private void UpdatePresence(string detailsText = null, string stateText = null)
-	{
-		// Update the details and state text
-		presence.Details = detailsText;
-		presence.State = stateText;
-
-		// Update the presence
-		client.SetPresence(presence);
-	}
-
-
 	// Update the state
 	public void UpdateState(State state)
 	{
-		if (state == State.DEBUGGING) UpdatePresence(stateText: "Debugging");
+		if (state == State.DEBUGGING) presence.State = "Debugging";
 		else if (state == State.PLAYING)
 		{
 			// Give a random bit of text
@@ -58,14 +46,17 @@ class Discord
 				// Thanks, Clyde for the text🔥👍
 			};
 
-			UpdatePresence(stateText: text[random.Next(0, text.Length)]);
+			presence.State = text[random.Next(0, text.Length)];
 		}
+		
+		client.SetPresence(presence);
 	}
 
 	// Update the map/location
 	public void UpdateDetails(string levelName)
 	{
-		UpdatePresence(detailsText: ("Level: " + levelName));
+		presence.Details = "Level: " + levelName;
+		client.SetPresence(presence);
 	}
 
 
