@@ -11,14 +11,17 @@ Todo list of features that I might add.
 - [ ] Somewhat tile based map
 - [ ] Player collisions with map
 - [ ] Fancy lighting
-- [x] Portals that work on X
-- [ ] Portals that work on Y
+- [x] Portals that work X - X
+- [ ] Portals that work Y - Y
+- [x] Portals that work X - Y or Y- X
+- [ ] Smooth portal "animations"
 - [ ] Portal gun to create portals
 - [ ] Button/Pressure plate
 - [ ] Companion Cube and Weighted Storage Cube that has gravity
 - [ ] Player can pick up cubes
 - [ ] Cube dispenser thing
 - [ ] Exit door that opens
+- [x] Discord rich presence
 - [ ] Ambient sound effects
 - [ ] Responsive SFML window
 - [ ] Settings editor
@@ -28,6 +31,7 @@ Todo list of features that I might add.
 - [ ] Moving platforms
 - [ ] Toxic water that can kill the player
 - [ ] Main menu
+- [ ] AFK detection
 - [ ] Save and load game
 - [ ] Achievements
 - [ ] Particles/screen shake
@@ -45,4 +49,4 @@ All measurements are in the table.
 | Weight/mass     | Kilograms |
 
 ## `GameObject` class
-`GameObject` is a class that is supposed to be extended. All game objects are updated and rendered once every frame. They also have a start method that is called a single time when the game starts.
+`GameObject` is a class that is supposed to be extended. All game objects are updated and rendered once every frame. They also have a start method that is called a single time when the game starts. Every frame their bounds gets set if the base Update is called.
