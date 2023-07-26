@@ -1,0 +1,3 @@
+NAME: Debug
+TILE-SIZE: 32
+BACKGROUND: ./assets/sprites/white-wall.png

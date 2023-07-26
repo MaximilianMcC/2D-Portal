@@ -8,9 +8,10 @@ class Game
 	public const float Gravity = 9.81f;
 	public static RenderWindow Window { get; private set; }
 	public static float DeltaTime { get; private set; }
+	public static Discord Discord { get; private set; }
 	public static List<GameObject> GameObjects;
 	private bool debugMode = false;
-	private Discord discord;
+	private Tilemap map;
 
 	public void Run()
 	{
@@ -35,15 +36,18 @@ class Game
 		bluePortal.OrangePortal = orangePortal;
 		orangePortal.BluePortal = bluePortal;
 
+		// Load the map
+		map = new Tilemap("./assets/maps/debug.txt");
 
 		// Run all of the game objects start methods
 		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Start();
 
 		// Start Discord rich presence
-		// TODO: Don't make private to game class
-		discord = new Discord();
-		discord.Start();
-		discord.UpdateState(State.PLAYING);
+		// TODO: Don't make public to game class
+		Discord = new Discord();
+		Discord.Start();
+		Discord.UpdateState(State.PLAYING);
+		Discord.UpdateDetails(map.LevelName);
 
 
 		while (Window.IsOpen)
@@ -76,14 +80,17 @@ class Game
 		if (InputManager.KeyPressed(InputManager.Inputs.ToggleDebugMode))
 		{
 			debugMode = !debugMode;
-			if (debugMode) discord.UpdateState(State.DEBUGGING);
-			else discord.UpdateState(State.PLAYING);
+			if (debugMode) Discord.UpdateState(State.DEBUGGING);
+			else Discord.UpdateState(State.PLAYING);
 		}
 	}
 
 	// Draw everything to the screen
 	private void Render()
 	{
+		// Draw the map
+		map.Render();
+
 		// Render all of the game objects
 		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Render();
 
