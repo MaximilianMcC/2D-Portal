@@ -47,8 +47,7 @@ class Game
 		Discord = new Discord();
 		Discord.Start();
 		Discord.UpdateState(State.PLAYING);
-		Discord.UpdateDetails(map.LevelName);
-
+		Game.Discord.UpdateDetails(map.LevelName);
 
 		while (Window.IsOpen)
 		{
