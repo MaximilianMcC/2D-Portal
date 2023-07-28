@@ -122,15 +122,15 @@ class Tilemap
 			// Add the value
 			if (foundKey)
 			{
-				// Add the current line/value to the array
-				array.Add(line.Replace(";", "").Trim());
-
 				// Check for if the array ended
-				if (line.EndsWith(";"))
+				if (line.StartsWith(":") == false)
 				{
 					foundKey = false;
 					break;
 				}
+
+				// Add the current line/value to the array
+				array.Add(line.Replace(":", "").Trim());
 			}
 		}
 

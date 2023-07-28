@@ -50,3 +50,11 @@ All measurements are in the table.
 
 ## `GameObject` class
 `GameObject` is a class that is supposed to be extended. All game objects are updated and rendered once every frame. They also have a start method that is called a single time when the game starts. Every frame their bounds gets set if the base Update is called.
+## Tilemap syntax
+```
+<PROPERTY-NAME>: <value>
+<ARRAY>:
+:<ITEM>
+:<ITEM>
+:<ITEM>
+```
