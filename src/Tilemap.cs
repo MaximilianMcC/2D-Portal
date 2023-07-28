@@ -8,7 +8,10 @@ class Tilemap
 	private float tileSize;
 
 	// All the stuff that gets rendered
+	private RenderTexture backgroundFill;
 	private RenderTexture background;
+	private RenderTexture foreground;
+	private RenderTexture lighting;
 
 
 
@@ -32,7 +35,7 @@ class Tilemap
 		// Generate the background fill
 		{
 			// Create a new render texture for drawing the background
-			background = new RenderTexture(Game.Window.Size.X, Game.Window.Size.Y);
+			backgroundFill = new RenderTexture(Game.Window.Size.X, Game.Window.Size.Y);
 			Texture backgroundTexture = new Texture(GetSingleValue<string>("background-fill"));
 
 			// Get how many tiles will be drawn on the X and Y
@@ -49,20 +52,51 @@ class Tilemap
 					backgroundTile.Position = new Vector2f(x * tileSize, y * tileSize);
 
 					// Add it to the background
-					background.Draw(backgroundTile);
+					backgroundFill.Draw(backgroundTile);
 				}
 			}
-			background.Display();
+			backgroundFill.Display();
 
 		}
 	
 		// Generate the background layer (no collisions)
 		{
+			// Get the map and the map data
 			string[] map = GetArrayValue("background-layer");
-			foreach (var item in map)
+			int width = map[0].Length;
+			int height = map.Length;
+
+			// Create the render texture to make the map
+			uint tilesX = (uint)(width * tileSize);
+			uint tilesY = (uint)(height * tileSize);
+			background = new RenderTexture(tilesX, tilesY);
+
+			// Preload the textures
+			// TODO: Don't hardcode this
+			//! Hack solution
+			Texture missing = new Texture("./assets/sprites/missing.png");
+			Texture whiteWall = new Texture("./assets/sprites/white-wall.png");
+			Texture blackWall = new Texture("./assets/sprites/black-wall.png");
+
+			// Loop through the width and height and create the background
+			for (int y = 0; y < height; y++)
 			{
-				Console.WriteLine(item);
+				for (int x = 0; x < width; x++)
+				{
+					// Get the texture
+					Texture texture = missing;
+					if (map[y][x] == '0') texture = whiteWall;
+					if (map[y][x] == '1') texture = blackWall;
+					Sprite tile = new Sprite(texture);
+
+					// Set the position
+					tile.Position = new Vector2f(x * tileSize, y * tileSize);
+
+					// Add it to the background
+					background.Draw(tile);
+				}
 			}
+			background.Display();
 		}
 	}
 
@@ -71,6 +105,7 @@ class Tilemap
 	public void Render()
 	{
 		// Draw the background fill
+		Game.Window.Draw(new Sprite(backgroundFill.Texture));
 		Game.Window.Draw(new Sprite(background.Texture));
 	}
 

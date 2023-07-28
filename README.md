@@ -8,7 +8,7 @@ Todo list of features that I might add.
 - [x] Velocity/Physics based player movement
 - [ ] Player gravity
 - [ ] Player animation
-- [ ] Somewhat tile based map
+- [x] Somewhat tile based map
 - [ ] Player collisions with map
 - [ ] Fancy lighting
 - [x] Portals that work X - X
@@ -37,6 +37,7 @@ Todo list of features that I might add.
 - [ ] Particles/screen shake
 - [ ] Players friction is different depending on material
 - [ ] Setting to change max fps or enable vsync
+- [ ] Make a tilemap generator/editor GUI in java or something
 
 # How it all works
 Mostly notes and stuff so I don't forget what I'm doing
