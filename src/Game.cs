@@ -87,6 +87,10 @@ class Game
 	// Draw everything to the screen
 	private void Render()
 	{
+		// Show fps
+		// TODO: Put this in debug class
+		Debug.LogValue("FPS", (int)(1f / DeltaTime));
+
 		// Draw the map
 		map.Render();
 
