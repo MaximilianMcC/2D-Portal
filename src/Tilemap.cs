@@ -9,9 +9,9 @@ class Tilemap
 
 	// All the stuff that gets rendered
 	private RenderTexture backgroundFill;
-	private RenderTexture background;
-	private RenderTexture foreground;
+	private RenderTexture map;
 	private RenderTexture lighting;
+	private VertexArray collisions;
 
 
 
@@ -29,85 +29,145 @@ class Tilemap
 		LoadMap();
 	}
 
-
+	// Load the map
 	private void LoadMap()
 	{
-		// Generate the background fill
-		{
-			// Create a new render texture for drawing the background
-			backgroundFill = new RenderTexture(Game.Window.Size.X, Game.Window.Size.Y);
-			Texture backgroundTexture = new Texture(GetSingleValue<string>("background-fill"));
-
-			// Get how many tiles will be drawn on the X and Y
-			uint tilesX = (uint)Math.Ceiling(Game.Window.Size.X / tileSize);
-			uint tilesY = (uint)Math.Ceiling(Game.Window.Size.Y / tileSize);
-
-			// Loop through the entire window and create the background
-			for (int y = 0; y < tilesY; y++)
-			{
-				for (int x = 0; x < tilesX; x++)
-				{
-					// Create the sprite
-					Sprite backgroundTile = new Sprite(backgroundTexture);
-					backgroundTile.Position = new Vector2f(x * tileSize, y * tileSize);
-
-					// Add it to the background
-					backgroundFill.Draw(backgroundTile);
-				}
-			}
-			backgroundFill.Display();
-
-		}
-	
-		// Generate the background layer (no collisions)
-		{
-			// Get the map and the map data
-			string[] map = GetArrayValue("background-layer");
-			int width = map[0].Length;
-			int height = map.Length;
-
-			// Create the render texture to make the map
-			uint tilesX = (uint)(width * tileSize);
-			uint tilesY = (uint)(height * tileSize);
-			background = new RenderTexture(tilesX, tilesY);
-
-			// Preload the textures
-			// TODO: Don't hardcode this
-			//! Hack solution
-			Texture missing = new Texture("./assets/sprites/missing.png");
-			Texture whiteWall = new Texture("./assets/sprites/white-wall.png");
-			Texture blackWall = new Texture("./assets/sprites/black-wall.png");
-
-			// Loop through the width and height and create the background
-			for (int y = 0; y < height; y++)
-			{
-				for (int x = 0; x < width; x++)
-				{
-					// Get the texture
-					Texture texture = missing;
-					if (map[y][x] == '0') texture = whiteWall;
-					if (map[y][x] == '1') texture = blackWall;
-					Sprite tile = new Sprite(texture);
-
-					// Set the position
-					tile.Position = new Vector2f(x * tileSize, y * tileSize);
-
-					// Add it to the background
-					background.Draw(tile);
-				}
-			}
-			background.Display();
-		}
+		// generate all of the map things
+		GenerateBackgroundFill();
+		GenerateMap();
+		GenerateCollisions();
 	}
-
 
 	// Render the map
 	public void Render()
 	{
-		// Draw the background fill
+		// Draw all of the textures
 		Game.Window.Draw(new Sprite(backgroundFill.Texture));
-		Game.Window.Draw(new Sprite(background.Texture));
+		Game.Window.Draw(new Sprite(map.Texture));
+
+		//! Debug
+		Game.Window.Draw(collisions);
 	}
+
+
+	// Generate the background fill
+	private void GenerateBackgroundFill()
+	{
+		// Create a new render texture for drawing the background
+		backgroundFill = new RenderTexture(Game.Window.Size.X, Game.Window.Size.Y);
+		Texture backgroundTexture = new Texture(GetSingleValue<string>("background-fill"));
+
+		// Get how many tiles will be drawn on the X and Y
+		uint tilesX = (uint)Math.Ceiling(Game.Window.Size.X / tileSize);
+		uint tilesY = (uint)Math.Ceiling(Game.Window.Size.Y / tileSize);
+
+		// Loop through the entire window and create the background
+		for (int y = 0; y < tilesY; y++)
+		{
+			for (int x = 0; x < tilesX; x++)
+			{
+				// Create the sprite
+				Sprite backgroundTile = new Sprite(backgroundTexture);
+				backgroundTile.Position = new Vector2f(x * tileSize, y * tileSize);
+
+				// Add it to the background
+				backgroundFill.Draw(backgroundTile);
+			}
+		}
+		backgroundFill.Display();
+
+	}
+
+	// Generate the map layer (no collisions)
+	private void GenerateMap()
+	{
+		// Get the map and the map data
+		string[] mapValues = GetArrayValue("background-layer");
+		int width = mapValues[0].Length;
+		int height = mapValues.Length;
+
+		// Create the render texture to make the map
+		uint tilesX = (uint)(width * tileSize);
+		uint tilesY = (uint)(height * tileSize);
+		map = new RenderTexture(tilesX, tilesY);
+
+		// Preload the textures
+		// TODO: Don't hardcode this
+		//! Hack solution
+		Texture missing = new Texture("./assets/sprites/missing.png");
+		Texture whiteWall = new Texture("./assets/sprites/white-wall.png");
+		Texture blackWall = new Texture("./assets/sprites/black-wall.png");
+
+		// Loop through the width and height and create the background
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				// Get the texture
+				Texture texture = missing;
+				if (mapValues[y][x] == '0') texture = whiteWall;
+				if (mapValues[y][x] == '1') texture = blackWall;
+				Sprite tile = new Sprite(texture);
+
+				// Set the position
+				tile.Position = new Vector2f(x * tileSize, y * tileSize);
+
+				// Add it to the background
+				this.map.Draw(tile);
+			}
+		}
+		this.map.Display();
+	}
+
+	// Generate the collisions for the map
+	private void GenerateCollisions()
+	{
+		// Get the map and the map data
+		string[] mapValues = GetArrayValue("background-layer");
+		int width = mapValues[0].Length;
+		int height = mapValues.Length;
+
+		// Create the vertex array to store the collisions
+		collisions = new VertexArray(PrimitiveType.Quads);
+
+		// Get what tiles are solid, and what aren't
+		// TODO: Don't hardcode this
+		//! Hack
+		// character, solid
+		Dictionary<char, bool> tiles = new Dictionary<char, bool>();
+		tiles.Add('0', false);
+		tiles.Add('1', true);
+
+		// Loop through the width and height and begin to create the tiles
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				// Check for if the current tile is solid or not
+				foreach (KeyValuePair<char, bool> tile in tiles)
+				{
+					// Check for if the current tile is selected, and solid
+					if (tile.Key == mapValues[y][x] && tile.Value == true)
+					{
+						// Get the new coordinates
+						float xPosition = x * tileSize;
+						float yPosition = y * tileSize;
+
+						// Add the new tiles to the vertex array
+						//TODO: Remove color. debug
+						collisions.Append(new Vertex(new Vector2f(xPosition, yPosition), Color.Red)); // Top left
+						collisions.Append(new Vertex(new Vector2f(xPosition + tileSize, yPosition), Color.Red)); // Top right
+						collisions.Append(new Vertex(new Vector2f(xPosition + tileSize, yPosition + tileSize), Color.Red)); // Bottom right
+						collisions.Append(new Vertex(new Vector2f(xPosition, yPosition + tileSize), Color.Red)); // Bottom left
+
+						// Don't continue going through the loop if its already been added
+						break;
+					}
+				}
+			}
+		}
+	}
+
 
 
 
@@ -139,12 +199,14 @@ class Tilemap
 		return default(T);
 	}
 
+	// Get an array from a map file
+	// TODO: Put into GetSingleValue method
 	private string[] GetArrayValue(string key)
 	{
 		List<string> array = new List<string>();
 		bool foundKey = false;
 
-		key = key.ToUpper();		
+		key = key.ToUpper();
 		foreach (string line in mapFile)
 		{
 			// Check for if the correct key is found
