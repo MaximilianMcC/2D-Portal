@@ -11,7 +11,7 @@ class Tilemap
 	private RenderTexture backgroundFill;
 	private RenderTexture map;
 	private RenderTexture lighting;
-	private VertexArray collisions;
+	public FloatRect[] Collisions;
 
 
 
@@ -44,9 +44,6 @@ class Tilemap
 		// Draw all of the textures
 		Game.Window.Draw(new Sprite(backgroundFill.Texture));
 		Game.Window.Draw(new Sprite(map.Texture));
-
-		//! Debug
-		Game.Window.Draw(collisions);
 	}
 
 
@@ -127,8 +124,8 @@ class Tilemap
 		int width = mapValues[0].Length;
 		int height = mapValues.Length;
 
-		// Create the vertex array to store the collisions
-		collisions = new VertexArray(PrimitiveType.Quads);
+		// Create a list to store collisions while generating
+		List<FloatRect> currentCollisions = new List<FloatRect>();
 
 		// Get what tiles are solid, and what aren't
 		// TODO: Don't hardcode this
@@ -149,16 +146,11 @@ class Tilemap
 					// Check for if the current tile is selected, and solid
 					if (tile.Key == mapValues[y][x] && tile.Value == true)
 					{
-						// Get the new coordinates
-						float xPosition = x * tileSize;
-						float yPosition = y * tileSize;
-
-						// Add the new tiles to the vertex array
-						//TODO: Remove color. debug
-						collisions.Append(new Vertex(new Vector2f(xPosition, yPosition), Color.Red)); // Top left
-						collisions.Append(new Vertex(new Vector2f(xPosition + tileSize, yPosition), Color.Red)); // Top right
-						collisions.Append(new Vertex(new Vector2f(xPosition + tileSize, yPosition + tileSize), Color.Red)); // Bottom right
-						collisions.Append(new Vertex(new Vector2f(xPosition, yPosition + tileSize), Color.Red)); // Bottom left
+						// Make the rectangle of the collisions
+						//TODO: Make the collisions "expand" to cover multiple tiles to make it faster and stuff. Not one collision per tile
+						Vector2f position = new Vector2f(x * tileSize, y * tileSize);
+						FloatRect collision = new FloatRect(position, new Vector2f(tileSize, tileSize));
+						currentCollisions.Add(collision);
 
 						// Don't continue going through the loop if its already been added
 						break;
@@ -166,6 +158,9 @@ class Tilemap
 				}
 			}
 		}
+
+		// Save the collisions as an array because its faster
+		Collisions = currentCollisions.ToArray();
 	}
 
 

@@ -1,3 +1,4 @@
+using System.Data;
 using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
@@ -12,6 +13,8 @@ class Game
 	public static List<GameObject> GameObjects;
 	private bool debugMode = false;
 	private Tilemap map;
+	private Player player;
+
 
 	public void Run()
 	{
@@ -28,7 +31,7 @@ class Game
 		// Store all game objects
 		// TODO: Instantiate game objects in another class or something to keep clean
 		GameObjects = new List<GameObject>();
-		Player player = new Player(new Vector2f(100, 200));
+		player = new Player(new Vector2f(100, 200));
 
 		// Create test portals
 		BluePortal bluePortal = new BluePortal(new Vector2f(10, 200), Direction.LEFT);
@@ -81,6 +84,16 @@ class Game
 			debugMode = !debugMode;
 			if (debugMode) Discord.UpdateState(State.DEBUGGING);
 			else Discord.UpdateState(State.PLAYING);
+		}
+
+
+		//! debug collision test
+		for (int i = 0; i < map.Collisions.Length; i++)
+		{
+			if (player.Bounds.Intersects(map.Collisions[i]))
+			{
+				Console.WriteLine("Collision");
+			}
 		}
 	}
 
