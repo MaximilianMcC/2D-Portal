@@ -52,10 +52,16 @@ All measurements are in the table.
 ## `GameObject` class
 `GameObject` is a class that is supposed to be extended. All game objects are updated and rendered once every frame. They also have a start method that is called a single time when the game starts. Every frame their bounds gets set if the base Update is called.
 ## Tilemap syntax
+- Names must be in all caps, end with `: `, and be in *kebab-case*.
+- Array items start with a `:`, and are only strings (currently)
 ```
 <PROPERTY-NAME>: <value>
-<ARRAY>:
+<ARRAY-NAME>:
 :<ITEM>
 :<ITEM>
 :<ITEM>
 ```
+## Tilemap collisions/rendering
+The tilemap is a collection of tiles. All of the tiles are converted to a single texture when they load, then a bunch of invisible rectangles are overlaid to create the collision. So the player is basically just floating on a texture.
+
+This is good because then only 3 draw calls *(fill, map, and lighting)* are made per frame to create the map *(not including player, objects, portals, etc)*
