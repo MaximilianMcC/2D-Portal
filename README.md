@@ -6,10 +6,10 @@ A simple version of the game Portal, remade in 2D using SFML
 Todo list of features that I might add.
 - [x] Basic SFML setup
 - [x] Velocity/Physics based player movement
-- [ ] Player gravity
+- [x] Player gravity
 - [ ] Player animation
 - [x] Somewhat tile based map
-- [ ] Player collisions with map
+- [x] Player collisions with map
 - [ ] Map centered in the screen
 - [ ] Fancy lighting
 - [x] Portals that work X - X
@@ -59,7 +59,7 @@ All measurements are in the table.
 - Array items start with a `:`, and are only strings (currently)
 ```
 <PROPERTY-NAME>: <value>
-<ARRAY-NAME>:
+<ARRAY-NAME>[]:
 :<ITEM>
 :<ITEM>
 :<ITEM>

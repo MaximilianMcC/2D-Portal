@@ -50,12 +50,15 @@ class Player : GameObject
 		velocity.X -= (frictionCoefficient * velocity.X);
 		if (Math.Abs(velocity.X) < 0.1f) velocity.X = 0f;
 
+		// Apply gravity
+		velocity.Y += Game.Gravity * Game.DeltaTime;
+
 		// Update the players position according to velocity
 		newPosition += velocity;
 
 		// Check for collision on the X, and Y axis
+		newPosition.Y = CollisionY(newPosition);
 		newPosition.X = CollisionX(newPosition);
-		// newPosition.Y = CollisionY(newPosition);
 
 		// Actually move the players
 		Position = newPosition;
@@ -87,7 +90,24 @@ class Player : GameObject
 
 
 	// Check for Y collisions
-	private void CollisionY(float y)
+	private float CollisionY(Vector2f newPosition)
 	{
+		// Create the new collision
+		FloatRect playerCollision = new FloatRect(newPosition, new Vector2f(Bounds.Width, Bounds.Height));
+
+		foreach (FloatRect tile in Game.Map.Collisions)
+		{
+			// Check for if the player collides with the current tile
+			if (playerCollision.Intersects(tile))
+			{
+				// Stop the player from moving, and give back the current position
+				velocity.Y = 0;
+				Console.WriteLine("collision!!!!!!!!!!!!!!");
+				return Position.Y;
+			}
+
+		}
+
+		return newPosition.Y;
 	}
 }
