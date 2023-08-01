@@ -5,10 +5,12 @@ class Player : GameObject
 {
 	public Direction direction;
 	private float moveForce = 2700f;
+	private float jumpForce = 15000f;
 	private float mass = 60f;
 	private float frictionCoefficient = 0.2f;
 	private Vector2f velocity;
 	private float width;
+	private bool onGround = false;
 
 
 	public Player(Vector2f spawnPoint)
@@ -32,6 +34,7 @@ class Player : GameObject
 
 		Debug.LogValue("Player Position", Position);
 		Debug.LogValue("Player Velocity", velocity);
+		Debug.LogValue("On ground rn: ", onGround);
 	}
 
 	// Move the player
@@ -45,6 +48,13 @@ class Player : GameObject
 		// Get player movement input, then apply force to move the player
 		if (InputManager.KeyHeld(InputManager.Inputs.MoveLeft)) velocity.X -= movement;
 		if (InputManager.KeyHeld(InputManager.Inputs.MoveRight)) velocity.X += movement;
+
+		// Check for if the player wants to jump, and if they are allowed to
+		if (InputManager.KeyPressed(InputManager.Inputs.jump) && onGround)
+		{
+			velocity.Y -= (jumpForce / mass) * Game.DeltaTime;
+			onGround = false;
+		}
 
 		// Apply friction on the X to slow down the player overtime
 		velocity.X -= (frictionCoefficient * velocity.X);
@@ -102,7 +112,7 @@ class Player : GameObject
 			{
 				// Stop the player from moving, and give back the current position
 				velocity.Y = 0;
-				Console.WriteLine("collision!!!!!!!!!!!!!!");
+				onGround = true;
 				return Position.Y;
 			}
 

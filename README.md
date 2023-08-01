@@ -12,6 +12,7 @@ Todo list of features that I might add.
 - [x] Player collisions with map
 - [ ] Map centered in the screen
 - [ ] Fancy lighting
+- [x] Jumping
 - [x] Portals that work X - X
 - [ ] Portals that work Y - Y
 - [x] Portals that work X - Y or Y- X
