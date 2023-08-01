@@ -11,7 +11,7 @@ class Tilemap
 	private RenderTexture backgroundFill;
 	private RenderTexture map;
 	private RenderTexture lighting;
-	public FloatRect[] Collisions;
+	public FloatRect[] Collisions { get; set; }
 
 
 

@@ -11,8 +11,8 @@ class Game
 	public static float DeltaTime { get; private set; }
 	public static Discord Discord { get; private set; }
 	public static List<GameObject> GameObjects;
+	public static Tilemap Map { get; set; }
 	private bool debugMode = false;
-	private Tilemap map;
 	private Player player;
 
 
@@ -40,7 +40,7 @@ class Game
 		orangePortal.BluePortal = bluePortal;
 
 		// Load the map
-		map = new Tilemap("./assets/maps/debug.txt");
+		Map = new Tilemap("./assets/maps/debug.txt");
 
 		// Run all of the game objects start methods
 		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Start();
@@ -50,7 +50,7 @@ class Game
 		Discord = new Discord();
 		Discord.Start();
 		Discord.UpdateState(State.PLAYING);
-		Game.Discord.UpdateDetails(map.LevelName);
+		Game.Discord.UpdateDetails(Map.LevelName);
 
 		while (Window.IsOpen)
 		{
@@ -85,16 +85,6 @@ class Game
 			if (debugMode) Discord.UpdateState(State.DEBUGGING);
 			else Discord.UpdateState(State.PLAYING);
 		}
-
-
-		//! debug collision test
-		for (int i = 0; i < map.Collisions.Length; i++)
-		{
-			if (player.Bounds.Intersects(map.Collisions[i]))
-			{
-				Console.WriteLine("Collision");
-			}
-		}
 	}
 
 	// Draw everything to the screen
@@ -105,7 +95,7 @@ class Game
 		Debug.LogValue("FPS", (int)(1f / DeltaTime));
 
 		// Draw the map
-		map.Render();
+		Map.Render();
 
 		// Render all of the game objects
 		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Render();

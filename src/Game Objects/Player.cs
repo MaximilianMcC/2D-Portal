@@ -8,6 +8,7 @@ class Player : GameObject
 	private float mass = 60f;
 	private float frictionCoefficient = 0.2f;
 	private Vector2f velocity;
+	private float width;
 
 
 	public Player(Vector2f spawnPoint)
@@ -17,15 +18,18 @@ class Player : GameObject
 
 		// Create the sprite
 		Sprite = new Sprite(new Texture("./assets/sprites/player/player-5.png"));
+		width = Sprite.GetLocalBounds().Width;
 	}
 
 
 	public override void Update()
 	{
+		base.Update();
+
+
 		// TODO: Split up player movement into another class
 		Move();
 
-		base.Update();
 		Debug.LogValue("Player Position", Position);
 		Debug.LogValue("Player Velocity", velocity);
 	}
@@ -45,12 +49,45 @@ class Player : GameObject
 		// Apply friction on the X to slow down the player overtime
 		velocity.X -= (frictionCoefficient * velocity.X);
 		if (Math.Abs(velocity.X) < 0.1f) velocity.X = 0f;
-		
-		// Update the players position
+
+		// Update the players position according to velocity
 		newPosition += velocity;
+
+		// Check for collision on the X, and Y axis
+		newPosition.X = CollisionX(newPosition);
+		// newPosition.Y = CollisionY(newPosition);
+
+		// Actually move the players
 		Position = newPosition;
+
 
 		// Update the players movement direction
 		direction = velocity.X >= 0 ? Direction.RIGHT : Direction.LEFT;
+	}
+
+	// Check for X collisions
+	private float CollisionX(Vector2f newPosition)
+	{
+		// Create the new collision
+		FloatRect playerCollision = new FloatRect(newPosition, new Vector2f(Bounds.Width, Bounds.Height));
+
+		foreach (FloatRect tile in Game.Map.Collisions)
+		{
+			// Check for if the player collides with the current tile
+			if (playerCollision.Intersects(tile))
+			{
+				// Stop the player from moving, and give back the current position
+				velocity.X = 0;
+				return Position.X;
+			}
+		}
+
+		return newPosition.X;
+	}
+
+
+	// Check for Y collisions
+	private void CollisionY(float y)
+	{
 	}
 }

@@ -10,6 +10,7 @@ Todo list of features that I might add.
 - [ ] Player animation
 - [x] Somewhat tile based map
 - [ ] Player collisions with map
+- [ ] Map centered in the screen
 - [ ] Fancy lighting
 - [x] Portals that work X - X
 - [ ] Portals that work Y - Y
@@ -38,6 +39,8 @@ Todo list of features that I might add.
 - [ ] Players friction is different depending on material
 - [ ] Setting to change max fps or enable vsync
 - [ ] Make a tilemap generator/editor GUI in java or something
+- [ ] FPS graph for debugging
+- [ ] Controller support. Xbox and Playstation
 
 # How it all works
 Mostly notes and stuff so I don't forget what I'm doing
