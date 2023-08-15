@@ -14,8 +14,6 @@ class Game
 	public static Tilemap Map { get; set; }
 	private bool debugMode = false;
 	private Player player;
-	private MainMenu Menu;
-
 
 	public void Run()
 	{
@@ -52,10 +50,6 @@ class Game
 		Discord.Start();
 		Discord.UpdateState(State.PLAYING);
 		Game.Discord.UpdateDetails(Map.LevelName);
-
-		// Main menu
-		// TODO: Put this somewhere else idk
-		Menu = new MainMenu();
 
 		while (Window.IsOpen)
 		{
@@ -97,17 +91,15 @@ class Game
 	{
 		// Show fps
 		// TODO: Put this in debug class
-		// Debug.LogValue("FPS", (int)(1f / DeltaTime));
+		Debug.LogValue("FPS", (int)(1f / DeltaTime));
 
-		// // Draw the map
-		// Map.Render();
+		// Draw the map
+		Map.Render();
 
-		// // Render all of the game objects
-		// for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Render();
+		// Render all of the game objects
+		for (int i = 0; i < GameObjects.Count; i++) GameObjects[i].Render();
 
-		// // Show the debug console if debug mode is enabled
-		// if (debugMode) Debug.RenderDebugMessages();
-
-		Menu.Render();
+		// Show the debug console if debug mode is enabled
+		if (debugMode) Debug.RenderDebugMessages();
 	}
 }
